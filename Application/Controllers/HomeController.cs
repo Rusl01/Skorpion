@@ -6,24 +6,33 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private ApplicationContext db;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ApplicationContext context)
         {
             _logger = logger;
+            db = context;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var games = db.Games;
+            return View(games);
         }
 
-        public IActionResult Privacy()
+        public IActionResult Cart()
+        {
+            return View();
+        }
+        
+        public IActionResult Profile()
         {
             return View();
         }
