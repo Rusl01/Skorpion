@@ -1,22 +1,26 @@
 ﻿<header class="white block-color">
     <nav class="navbar navbar-expand-lg navbar-dark white">
         <div class="container">
-            <a class="navbar-brand title" href="#">SKORPION</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+            <a class="navbar-brand title" asp-action="Index">SKORPION</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Header navigation">
+                <span class="ti-menu"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="collapse navbar-collapse" id="navbarHeader">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Игры</a>
+                        <a class="nav-link" asp-action="Catalog">Игры</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Корзина</a>
+                        <a class="nav-link" asp-action="Cart">Корзина</a>
                     </li>
                 </ul>
                 <div class="my-2 my-lg-0">
-                    <a class="btn mr-sm-2 primary-color white btn-grad" href="#">Логин</a>
-                    <a class="btn primary-color white btn-grad" href="#">Регистрация</a>
+                    <a type="button" class="btn mr-sm-2 primary-color white btn-grad" asp-action="SignIn">
+                        Войти
+                    </a>
+                    <a type="button" class="btn primary-color white btn-grad" asp-action="SignUp">
+                        Регистрация
+                    </a>
                 </div>
             </div>
         </div>

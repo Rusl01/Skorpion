@@ -1,0 +1,24 @@
+﻿<div class="row justify-content-center">
+    @for (var i = 0; i < 2; i++)
+    {
+        <div class="col-sm-6">
+            <div class="card block-color mb-3" style="max-width: 540px;">
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                        <img src="@Model[i].Cover" class="card-img" width="200" height="200"  alt="https://www.digiseller.ru/preview/828276/p1_2894461_1c8d45ca.jpg">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">@Model[i].Title</h5>
+                            <p class="card-text">@Model[i].Description</p>
+                            <p class="card-text">
+                                <small class="text-muted">Релиз вышел @Model[i].ReleaseDate.ToShortDateString()</small>
+                                <button class="btn my-2 my-sm-0 btn-grad ml-auto" type="submit">Купить</button>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
