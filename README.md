@@ -12,10 +12,13 @@
 <h2> :book: Технологии</h2>
 <ul>
   <li><b>ASP.NET Core</b></li>
-  <li><b>ASP.NET Core MVC</b></li>
-  <li><b>ASP.NET Core Identity</b></li>
+    <ul>
+      <li><b>ASP.NET Core MVC</b></li>
+      <li><b>ASP.NET Core Identity</b></li>
+      <li><b>Razor Pages</b></li>
+    </ul>
   <li><b>Entity Framework Core</b></li>
-  <li><b>Razor Pages</b></li>
   <li><b>Boostrap</b></li>
+  <li><b>JQuery</b></li>
   <li><b>PostgreSQL</b></li>
 </ul>
