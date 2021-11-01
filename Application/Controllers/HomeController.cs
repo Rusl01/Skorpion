@@ -23,7 +23,7 @@ namespace Application.Controllers
 
         public IActionResult Index()
         {
-            var games = db.Games;
+            var games = db.Games.ToList();
             return View(games);
         }
 
@@ -32,7 +32,23 @@ namespace Application.Controllers
             return View();
         }
         
+        public IActionResult Catalog()
+        {
+            var games = db.Games.ToList();
+            return View(games);
+        }
+        
         public IActionResult Profile()
+        {
+            return View();
+        }
+        
+        public IActionResult SignIn()
+        {
+            return View();
+        }
+        
+        public IActionResult SignUp()
         {
             return View();
         }
