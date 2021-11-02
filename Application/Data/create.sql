@@ -29,7 +29,8 @@ CREATE TABLE games
     id           BIGSERIAL PRIMARY KEY,
     title        VARCHAR(255) NOT NULL UNIQUE,
     release_date DATE NOT NULL,
-    description  TEXT NOT NULL
+    description  TEXT NOT NULL,
+    cover        TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS games_genres

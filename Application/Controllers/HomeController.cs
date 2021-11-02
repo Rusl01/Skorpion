@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Controllers
@@ -23,34 +24,10 @@ namespace Application.Controllers
 
         public IActionResult Index()
         {
-            var games = db.Games.ToList();
-            return View(games);
-        }
-
-        public IActionResult Cart()
-        {
-            return View();
-        }
-        
-        public IActionResult Catalog()
-        {
-            var games = db.Games.ToList();
-            return View(games);
-        }
-        
-        public IActionResult Profile()
-        {
-            return View();
-        }
-        
-        public IActionResult SignIn()
-        {
-            return View();
-        }
-        
-        public IActionResult SignUp()
-        {
-            return View();
+            List<Game> games = db.Games.ToList();
+            List<Genre> genres = db.Genres.ToList();
+            GameViewModel gameViewModel = new GameViewModel { Games = games, Genres = genres };
+            return View(gameViewModel);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
