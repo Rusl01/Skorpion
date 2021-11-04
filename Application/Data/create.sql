@@ -1,10 +1,14 @@
-﻿DROP TABLE games_genres;
-DROP TABLE users_roles;
-DROP TABLE users_games;
-DROP TABLE users;
-DROP TABLE roles;
-DROP TABLE genres;
-DROP TABLE games;
+﻿DROP TABLE IF EXISTS games_genres;
+DROP TABLE IF EXISTS games_platforms;
+DROP TABLE IF EXISTS games_players;
+DROP TABLE IF EXISTS users_roles;
+DROP TABLE IF EXISTS users_games;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS roles;
+DROP TABLE IF EXISTS genres;
+DROP TABLE IF EXISTS platforms;
+DROP TABLE IF EXISTS players;
+DROP TABLE IF EXISTS games;
 
 CREATE TABLE IF NOT EXISTS users
 (
@@ -24,6 +28,18 @@ CREATE TABLE IF NOT EXISTS genres
     name VARCHAR(255) NOT NULL UNIQUE
 );
 
+CREATE TABLE IF NOT EXISTS platforms
+(
+    id   BIGSERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS players
+(
+    id   BIGSERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE
+);
+
 CREATE TABLE games
 (
     id           BIGSERIAL PRIMARY KEY,
@@ -38,6 +54,20 @@ CREATE TABLE IF NOT EXISTS games_genres
     game_id  BIGINT REFERENCES games (id),
     genre_id BIGINT REFERENCES genres (id),
     PRIMARY KEY(game_id, genre_id)
+);
+
+CREATE TABLE IF NOT EXISTS games_platforms
+(
+    game_id  BIGINT REFERENCES games (id),
+    platform_id BIGINT REFERENCES platforms (id),
+    PRIMARY KEY(game_id, platform_id)
+);
+
+CREATE TABLE IF NOT EXISTS games_players
+(
+    game_id  BIGINT REFERENCES games (id),
+    player_id BIGINT REFERENCES players (id),
+    PRIMARY KEY(game_id, player_id)
 );
 
 CREATE TABLE IF NOT EXISTS users_roles

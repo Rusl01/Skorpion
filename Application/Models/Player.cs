@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Application.Models
 {
-    [Table("genres")]
-    public class Genre
+    [Table("players")]
+    public class Player
     {
         [Column("id")]
         public int Id { get; set; }
@@ -13,6 +13,6 @@ namespace Application.Models
         [NotMapped]
         public bool Selected { get; set; }
 
-        public ICollection<GameGenre> Games { get; set; }
+        public ICollection<GamePlayer> Games { get; set; }
     }
 }

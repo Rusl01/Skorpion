@@ -9,6 +9,14 @@ INSERT INTO genres (name) VALUES ('Platform');
 INSERT INTO genres (name) VALUES ('Strategy');
 INSERT INTO genres (name) VALUES ('Action');
 
+INSERT INTO platforms (name) VALUES ('Windows');
+INSERT INTO platforms (name) VALUES ('Linux');
+INSERT INTO platforms (name) VALUES ('Mac');
+
+INSERT INTO players (name) VALUES ('Одиночная игра');
+INSERT INTO players (name) VALUES ('Кооперативная игра');
+INSERT INTO players (name) VALUES ('Многопользовательская игра');
+
 INSERT INTO users (nickname) VALUES ('taiiiga');
 
 INSERT INTO games (id, title, release_date, description, cover) 
@@ -24,12 +32,26 @@ VALUES (5, 'CS:GO', '2012-05-02', 'Lorem ipsum dolor sit amet, consectetuer adip
 INSERT INTO games (id, title, release_date, description, cover)
 VALUES (6, 'Warface', '2013-05-02', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a,', 'https://game-tips.ru/wp-content/uploads/2017/06/Warface.jpg');
 
-INSERT INTO games_genres VALUES (1, 2);
+INSERT INTO games_genres VALUES (1, 1);
 INSERT INTO games_genres VALUES (2, 2);
-INSERT INTO games_genres VALUES (3, 2);
-INSERT INTO games_genres VALUES (4, 2);
-INSERT INTO games_genres VALUES (5, 2);
-INSERT INTO games_genres VALUES (6, 2);
+INSERT INTO games_genres VALUES (3, 3);
+INSERT INTO games_genres VALUES (4, 4);
+INSERT INTO games_genres VALUES (5, 5);
+INSERT INTO games_genres VALUES (6, 6);
+
+INSERT INTO games_platforms VALUES (1, 1);
+INSERT INTO games_platforms VALUES (2, 2);
+INSERT INTO games_platforms VALUES (3, 3);
+INSERT INTO games_platforms VALUES (4, 1);
+INSERT INTO games_platforms VALUES (5, 2);
+INSERT INTO games_platforms VALUES (6, 3);
+
+INSERT INTO games_players VALUES (1, 1);
+INSERT INTO games_players VALUES (2, 2);
+INSERT INTO games_players VALUES (3, 3);
+INSERT INTO games_players VALUES (4, 1);
+INSERT INTO games_players VALUES (5, 2);
+INSERT INTO games_players VALUES (6, 3);
 
 INSERT INTO users_roles VALUES (1, 3);
 

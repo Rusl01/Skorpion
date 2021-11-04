@@ -1,4 +1,5 @@
-﻿<div class="row border-top border-bottom">
+﻿@model Application.ViewModels.CatalogViewModel
+<div class="row border-top border-bottom">
     <div class="col">
         <nav class="navbar navbar-expand-lg hstack gap-3">
             <div class="dropdown">
@@ -14,65 +15,63 @@
                     </li>
                 </ul>
             </div>
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuGenre" data-bs-toggle="dropdown" aria-expanded="false">
-                    Жанр
-                </button>
-                <ul class="dropdown-menu checkbox-menu allow-focus" aria-labelledby="dropdownMenuGenre">
-                    @foreach (Genre genre in Model.Genres)
-                    {
-                        <li>
-                            <label>
-                                <input type="checkbox"> @genre.Name
-                            </label>
-                        </li>
-                    }
-                </ul>
-            </div>
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuPlatform" data-bs-toggle="dropdown" aria-expanded="false">
-                    Платформа
-                </button>
-                <ul class="dropdown-menu checkbox-menu allow-focus" aria-labelledby="dropdownMenuPlatform">
-                    <li>
-                        <label>
-                            <input type="checkbox"> Windows
-                        </label>
-                    </li>
-                    <li>
-                        <label>
-                            <input type="checkbox"> Linux
-                        </label>
-                    </li>
-                    <li>
-                        <label>
-                            <input type="checkbox"> Mac
-                        </label>
-                    </li>
-                </ul>
-            </div>
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuPlayers" data-bs-toggle="dropdown" aria-expanded="false">
-                    Число игроков
-                </button>
-                <ul class="dropdown-menu checkbox-menu allow-focus" aria-labelledby="dropdownMenuPlayers">
-                    <li>
-                        <label>
-                            <input type="checkbox"> Одиночная игра
-                        </label>
-                    </li>
-                    <li>
-                        <label>
-                            <input type="checkbox"> Кооперативная игра
-                        </label>
-                    </li>
-                    <li>
-                        <label>
-                            <input type="checkbox"> Многопользовательская игра
-                        </label>
-                    </li>
-                </ul>
-            </div>
+            <form class="hstack gap-3" asp-controller="Catalog" asp-action="Index" method="post" role="form">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuGenre" data-bs-toggle="dropdown" aria-expanded="false">
+                        Жанр
+                    </button>
+                    <ul class="dropdown-menu checkbox-menu allow-focus" aria-labelledby="dropdownMenuGenre">
+                        @for (int i = 0; i < Model.Genres.Count; i++)
+                        {
+                            <li>
+                                <label>
+                                    <input type="checkbox" asp-for="@Model.Genres[i].Selected" checked="@Model.Genres[i].Selected">
+                                    @Model.Genres[i].Name
+                                    <input type="hidden" asp-for="@Model.Genres[i].Id">
+                                    <input type="hidden" asp-for="@Model.Genres[i].Name">
+                                </label>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuPlatform" data-bs-toggle="dropdown" aria-expanded="false">
+                        Платформа
+                    </button>
+                    <ul class="dropdown-menu checkbox-menu allow-focus" aria-labelledby="dropdownMenuPlatform">
+                        @for (int i = 0; i < Model.Platforms.Count; i++)
+                        {
+                            <li>
+                                <label>
+                                    <input type="checkbox" asp-for="@Model.Platforms[i].Selected" checked="@Model.Platforms[i].Selected">
+                                    @Model.Platforms[i].Name
+                                    <input type="hidden" asp-for="@Model.Platforms[i].Id">
+                                    <input type="hidden" asp-for="@Model.Platforms[i].Name">
+                                </label>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuPlayers" data-bs-toggle="dropdown" aria-expanded="false">
+                        Число игроков
+                    </button>
+                    <ul class="dropdown-menu checkbox-menu allow-focus" aria-labelledby="dropdownMenuPlayers">
+                        @for (int i = 0; i < Model.Players.Count; i++)
+                        {
+                            <li>
+                                <label>
+                                    <input type="checkbox" asp-for="@Model.Players[i].Selected" checked="@Model.Players[i].Selected">
+                                    @Model.Players[i].Name
+                                    <input type="hidden" asp-for="@Model.Players[i].Id">
+                                    <input type="hidden" asp-for="@Model.Players[i].Name">
+                                </label>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <button class="btn btn-outline-secondary" type="submit">Показать</button>
+            </form>
             <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#searchCatalog" aria-controls="searchCatalog" aria-expanded="false" aria-label="Search Catalog">
                 <span class="ti-search"></span>
             </button>
