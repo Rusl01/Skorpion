@@ -9,6 +9,14 @@ INSERT INTO genres (name) VALUES ('Platform');
 INSERT INTO genres (name) VALUES ('Strategy');
 INSERT INTO genres (name) VALUES ('Action');
 
+INSERT INTO platforms (name) VALUES ('Windows');
+INSERT INTO platforms (name) VALUES ('Linux');
+INSERT INTO platforms (name) VALUES ('Mac');
+
+INSERT INTO players (name) VALUES ('Одиночная игра');
+INSERT INTO players (name) VALUES ('Кооперативная игра');
+INSERT INTO players (name) VALUES ('Многопользовательская игра');
+
 INSERT INTO users (nickname) VALUES ('taiiiga');
 
 INSERT INTO games (id, title, release_date, description, cover) 
@@ -30,6 +38,20 @@ INSERT INTO games_genres VALUES (3, 3);
 INSERT INTO games_genres VALUES (4, 4);
 INSERT INTO games_genres VALUES (5, 5);
 INSERT INTO games_genres VALUES (6, 6);
+
+INSERT INTO games_platforms VALUES (1, 1);
+INSERT INTO games_platforms VALUES (2, 2);
+INSERT INTO games_platforms VALUES (3, 3);
+INSERT INTO games_platforms VALUES (4, 1);
+INSERT INTO games_platforms VALUES (5, 2);
+INSERT INTO games_platforms VALUES (6, 3);
+
+INSERT INTO games_players VALUES (1, 1);
+INSERT INTO games_players VALUES (2, 2);
+INSERT INTO games_players VALUES (3, 3);
+INSERT INTO games_players VALUES (4, 1);
+INSERT INTO games_players VALUES (5, 2);
+INSERT INTO games_players VALUES (6, 3);
 
 INSERT INTO users_roles VALUES (1, 3);
 

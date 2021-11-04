@@ -26,7 +26,9 @@ namespace Application.Controllers
         {
             List<Game> games = db.Games.ToList();
             List<Genre> genres = db.Genres.ToList();
-            CatalogViewModel catalogViewModel = new CatalogViewModel { Games = games, Genres = genres };
+            List<Platform> platforms = db.Platforms.ToList();
+            List<Player> players = db.Players.ToList();
+            CatalogViewModel catalogViewModel = new CatalogViewModel { Games = games, Genres = genres, Platforms = platforms, Players = players };
             return View(catalogViewModel);
         }
 

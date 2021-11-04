@@ -47,7 +47,9 @@ namespace Application.Controllers
             }
 
             var genres = db.Genres.ToList();
-            var catalogViewModel = new CatalogViewModel {Games = games.ToList(), Genres = genres};
+            List<Platform> platforms = db.Platforms.ToList();
+            List<Player> players = db.Players.ToList();
+            var catalogViewModel = new CatalogViewModel {Games = games.ToList(), Genres = genres, Platforms = platforms, Players = players };
             return View(catalogViewModel);
         }
 
@@ -81,6 +83,8 @@ namespace Application.Controllers
             }
             catalogViewModel.Games = newGames;
             catalogViewModel.Genres = catalogViewModel.Genres.ToList();
+            catalogViewModel.Platforms = catalogViewModel.Platforms;
+            catalogViewModel.Players = catalogViewModel.Players;
             Console.WriteLine("Выбранные игры!!!");
             foreach (var v in catalogViewModel.Games)
             {

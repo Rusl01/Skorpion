@@ -2,15 +2,15 @@
 
 namespace Application.Models
 {
-    [Table("games_genres")]
-    public class GameGenre
+    [Table("games_players")]
+    public class GamePlayer
     {
         [Column("game_id")]
         public int GameId { get; set; }
         public Game Game { get; set; }
         
-        [Column("genre_id")]
-        public int GenreId { get; set; }
-        public Genre Genre { get; set; }
+        [Column("player_id")]
+        public int PlayerId { get; set; }
+        public Player Player { get; set; }
     }
 }

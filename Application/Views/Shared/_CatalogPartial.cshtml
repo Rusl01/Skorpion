@@ -39,21 +39,17 @@
                         Платформа
                     </button>
                     <ul class="dropdown-menu checkbox-menu allow-focus" aria-labelledby="dropdownMenuPlatform">
-                        <li>
-                            <label>
-                                <input type="checkbox"> Windows
-                            </label>
-                        </li>
-                        <li>
-                            <label>
-                                <input type="checkbox"> Linux
-                            </label>
-                        </li>
-                        <li>
-                            <label>
-                                <input type="checkbox"> Mac
-                            </label>
-                        </li>
+                        @for (int i = 0; i < Model.Platforms.Count; i++)
+                        {
+                            <li>
+                                <label>
+                                    <input type="checkbox" asp-for="@Model.Platforms[i].Selected" checked="@Model.Platforms[i].Selected">
+                                    @Model.Platforms[i].Name
+                                    <input type="hidden" asp-for="@Model.Platforms[i].Id">
+                                    <input type="hidden" asp-for="@Model.Platforms[i].Name">
+                                </label>
+                            </li>
+                        }
                     </ul>
                 </div>
                 <div class="dropdown">
@@ -61,24 +57,20 @@
                         Число игроков
                     </button>
                     <ul class="dropdown-menu checkbox-menu allow-focus" aria-labelledby="dropdownMenuPlayers">
-                        <li>
-                            <label>
-                                <input type="checkbox"> Одиночная игра
-                            </label>
-                        </li>
-                        <li>
-                            <label>
-                                <input type="checkbox"> Кооперативная игра
-                            </label>
-                        </li>
-                        <li>
-                            <label>
-                                <input type="checkbox"> Многопользовательская игра
-                            </label>
-                        </li>
+                        @for (int i = 0; i < Model.Players.Count; i++)
+                        {
+                            <li>
+                                <label>
+                                    <input type="checkbox" asp-for="@Model.Players[i].Selected" checked="@Model.Players[i].Selected">
+                                    @Model.Players[i].Name
+                                    <input type="hidden" asp-for="@Model.Players[i].Id">
+                                    <input type="hidden" asp-for="@Model.Players[i].Name">
+                                </label>
+                            </li>
+                        }
                     </ul>
                 </div>
-                <button class="btn btn-outline-secondary" type="submit">Поиск</button>
+                <button class="btn btn-outline-secondary" type="submit">Показать</button>
             </form>
             <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#searchCatalog" aria-controls="searchCatalog" aria-expanded="false" aria-label="Search Catalog">
                 <span class="ti-search"></span>
