@@ -10,6 +10,9 @@ namespace Application.Models
         public int Id { get; set; }
         [Column("name")]
         public string Name { get; set; }
-        public List<Game> Games { get; set; } = new List<Game>();
+        [NotMapped]
+        public bool Selected { get; set; }
+
+        public ICollection<GameGenre> Games { get; set; }
     }
 }

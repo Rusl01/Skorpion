@@ -26,8 +26,8 @@ namespace Application.Controllers
         {
             List<Game> games = db.Games.ToList();
             List<Genre> genres = db.Genres.ToList();
-            GameViewModel gameViewModel = new GameViewModel { Games = games, Genres = genres };
-            return View(gameViewModel);
+            CatalogViewModel catalogViewModel = new CatalogViewModel { Games = games, Genres = genres };
+            return View(catalogViewModel);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

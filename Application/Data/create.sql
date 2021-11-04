@@ -1,10 +1,10 @@
-﻿DROP TABLE games_genres;
-DROP TABLE users_roles;
-DROP TABLE users_games;
-DROP TABLE users;
-DROP TABLE roles;
-DROP TABLE genres;
-DROP TABLE games;
+﻿DROP TABLE IF EXISTS games_genres;
+DROP TABLE IF EXISTS users_roles;
+DROP TABLE IF EXISTS users_games;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS roles;
+DROP TABLE IF EXISTS genres;
+DROP TABLE IF EXISTS games;
 
 CREATE TABLE IF NOT EXISTS users
 (

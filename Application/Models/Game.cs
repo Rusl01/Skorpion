@@ -17,6 +17,6 @@ namespace Application.Models
         public string Description { get; set; }
         [Column("cover")]
         public string Cover { get; set; }
-        public List<Genre> Genres { get; set; } = new List<Genre>();
+        public ICollection<GameGenre> Genres { get; set; }
     }
 }
