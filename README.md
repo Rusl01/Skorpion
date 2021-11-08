@@ -1,7 +1,7 @@
 <p align="center"> 
   <img src="https://cdn-icons-png.flaticon.com/512/32/32840.png" alt="Логотип" width="80px" height="80px">
 </p>
-<h1 align="center"> Skorpion </h1>
+<h1 align="center"> Skorpion в разработке </h1>
 <p>Интернет-магазин компьютерных игр инди разработчиков</p>
 <h2> :hocho: Возможности</h2>
 <ul>
