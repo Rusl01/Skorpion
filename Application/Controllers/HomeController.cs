@@ -25,11 +25,7 @@ namespace Application.Controllers
         public IActionResult Index()
         {
             List<Game> games = db.Games.ToList();
-            List<Genre> genres = db.Genres.ToList();
-            List<Platform> platforms = db.Platforms.ToList();
-            List<Player> players = db.Players.ToList();
-            CatalogViewModel catalogViewModel = new CatalogViewModel { Games = games, Genres = genres, Platforms = platforms, Players = players };
-            return View(catalogViewModel);
+            return View(games);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

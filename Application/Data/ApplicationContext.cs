@@ -13,7 +13,7 @@ namespace Application.Models
         public DbSet<GameGenre> GameGenres { get; set; }
         public DbSet<GamePlatform> GamePlatforms { get; set; }
         public DbSet<GamePlayer> GamePlayers { get; set; }
-        
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=store;Username=postgres;Password=postgres");

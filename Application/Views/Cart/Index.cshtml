@@ -1,6 +1,36 @@
 ﻿@{
-    ViewData["Title"] = "Cart";
+    ViewData["Title"] = "Корзина";
 }
-<h1>@ViewData["Title"]</h1>
-
-<p>Будущая корзина</p>
+<div class="mt-3 h-100 row align-items-center">
+    <form class="form-signin">
+        <h1 class="h3 mb-3 fw-normal">Ваша корзина</h1>
+        <table class="table">
+            <tr>
+                <th>Id</th>
+                <th>Название</th>
+                <th>Цена</th>
+                <th>Опция</th>
+            </tr>
+            @foreach (var item in ViewBag.cart)
+            {
+                <tr>
+                    <td>@item.Game.Id</td>
+                    <td>@item.Game.Title</td>
+                    <td>@item.Game.Price</td>
+                    <td>
+                        <a asp-controller="cart" asp-action="remove" asp-route-id="@item.Game.Id">Удалить</a>
+                    </td>
+                </tr>
+            }
+            <tr>
+                <td>Сумма: @ViewBag.total</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+        <br>
+        <a asp-controller="Catalog" asp-action="index" class="w-100 btn btn-lg btn-primary">Продолжить покупки</a>
+        <button class="w-100 btn btn-lg btn-primary mt-1" type="submit">Оформить заказ</button>
+    </form>
+</div>

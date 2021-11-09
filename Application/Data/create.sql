@@ -46,7 +46,8 @@ CREATE TABLE games
     title        VARCHAR(255) NOT NULL UNIQUE,
     release_date DATE NOT NULL,
     description  TEXT NOT NULL,
-    cover        TEXT NOT NULL
+    cover        TEXT NOT NULL,
+    price        REAL NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS games_genres

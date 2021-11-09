@@ -17,6 +17,8 @@ namespace Application.Models
         public string Description { get; set; }
         [Column("cover")]
         public string Cover { get; set; }
+        [Column("price")]
+        public double Price { get; set; }
         public ICollection<GameGenre> Genres { get; set; }
     }
 }
