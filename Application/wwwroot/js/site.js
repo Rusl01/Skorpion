@@ -2,7 +2,7 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
-$(".checkbox-menu").on("change", "input[type='checkbox']", function() {
+$(".checkbox-menu").on("change", "input[type='checkbox']", function () {
     $(this).closest("li").toggleClass("active", this.checked);
 });
 
