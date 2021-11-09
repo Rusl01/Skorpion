@@ -77,39 +77,39 @@
         </div>
     </div>
     <div class="row" style="height: 600px">
-            <div class="card mb-3 w-100 block-color">
-                <div class="d-flex w-100">
-                    <div class="p-5 flex">
-                        <div id="carouselExampleInterval" class="carousel slide carousel-fade" data-bs-ride="carousel">
-                            <div class="carousel-inner">
-                                @for (var i = 0; i < 3; i++)
-                                {
-                                    <div class="carousel-item @(i == 0 ? "active" : "")" data-bs-interval="3000">
-                                        <div class="mb-3 w-100 block-color border-0">
-                                            <div class="row">
-                                                <div class="col h-100">
-                                                    <img src="@Model[i].Cover" class="img-fluid rounded-start rounded-3" alt="@Model[i].Cover">
-                                                </div>
-                                                <div class="col">
-                                                    <div class="card-body">
-                                                        <h5 class="card-title">@Model[i].Title</h5>
-                                                        <p class="card-text">@Model[i].Description</p>
-                                                        <p class="card-text">
-                                                            <small class="text-muted">Релиз @Model[i].ReleaseDate.ToShortDateString()</small>
-                                                        </p>
-                                                        <p class="card-text">
-                                                            <button class="btn btn-primary ml-auto" type="submit">Купить</button>
-                                                        </p>
-                                                    </div>
+        <div class="card mb-3 w-100 block-color">
+            <div class="d-flex w-100">
+                <div class="p-5 flex">
+                    <div id="carouselExampleInterval" class="carousel slide carousel-fade" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            @for (var i = 0; i < 3; i++)
+                            {
+                                <div class="carousel-item @(i == 0 ? "active" : "")" data-bs-interval="3000">
+                                    <div class="mb-3 w-100 block-color border-0">
+                                        <div class="row">
+                                            <div class="col h-100">
+                                                <img src="@Model[i].Cover" class="img-fluid rounded-start rounded-3" alt="@Model[i].Cover">
+                                            </div>
+                                            <div class="col">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">@Model[i].Title</h5>
+                                                    <p class="card-text">@Model[i].Description</p>
+                                                    <p class="card-text">
+                                                        <small class="text-muted">Релиз @Model[i].ReleaseDate.ToShortDateString()</small>
+                                                    </p>
+                                                    <p class="card-text">
+                                                        <button class="btn btn-primary ml-auto" type="submit">Купить</button>
+                                                    </p>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                }
-                            </div>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 </div>

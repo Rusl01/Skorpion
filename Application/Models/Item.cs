@@ -1,7 +1,6 @@
-﻿namespace Application.Models
+﻿namespace Application.Models;
+
+public class Item
 {
-    public class Item
-    {
-        public Game Game { get; set; }
-    }
+    public Game Game { get; set; }
 }
