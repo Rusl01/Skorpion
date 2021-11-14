@@ -17,6 +17,5 @@
     </ul>
   <li><b>Entity Framework Core</b></li>
   <li><b>Boostrap</b></li>
-  <li><b>JQuery</b></li>
   <li><b>PostgreSQL</b></li>
 </ul>
