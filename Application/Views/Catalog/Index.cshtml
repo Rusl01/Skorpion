@@ -19,11 +19,11 @@
                             <a class="dropdown-item" a sp-controller="Catalog" asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">по наименованию</a>
                         </li>
                     </ul>
-                </div>ontroller="Catalog" asp-action="Index" method="post" role="form">
+                </div>
+                <form class="hstack gap-3" asp-controller="Catalog" asp-action="Index" method="post" role="form">
                     <div class="dropdown">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuGenre" data-bs-toggle="dropdown" aria-expanded="false">
                             Жанр
-                <form class="hstack gap-3" asp-c
                         </button>
                         <ul class="dropdown-menu checkbox-menu allow-focus" aria-labelledby="dropdownMenuGenre">
                             @for (var i = 0; i < Model.Genres.Count; i++)
