@@ -14,7 +14,8 @@ public class ApplicationContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=store;Username=postgres;Password=postgres");
+        //optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=store;Username=postgres;Password=postgres");
+        optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=1234");
     }
 
     protected override void OnModelCreating(ModelBuilder builder)
