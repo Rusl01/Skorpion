@@ -30,6 +30,12 @@
   <li>PostgreSQL</li>
 </ul>
 <p>В файле Startup.cs найти код:</p><code>services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(Configuration.GetConnectionString("IskanderConnection")));</code>  
-  <p></p>
-  <p>В параметры GetConnectionString() отправить свою строку подключения. Её можно найти в файле appsettings.json, там же эту строку можно отредактировать под себя</p>
+<p></p>
+<p>В параметры GetConnectionString() отправить свою строку подключения. Её можно найти в файле appsettings.json, там же эту строку можно отредактировать под себя</p>
+<p>Дальше необходимо подготовить базу данных. Открываем консоль в папке проекта, прописываем следующие команды</p>
+<ul>
+  <li><code>dotnet ef migrations add InitialCreate</code></li>
+  <li><code>dotnet ef database update</code></li>
+</ul>
+<p>Теперь нужно заполнить базу данных. Для этого запускаем data.sql скрипт</p>
 <p>Готово! Запускаем проект с помощью IDE или с помощью командной строки, введя <code>dotnet watch</code></p>
