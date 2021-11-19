@@ -14,14 +14,31 @@
                         <a class="nav-link" asp-controller="Cart" asp-action="Index">Корзина</a>
                     </li>
                 </ul>
-                <div class="d-flex ms-auto">
-                    <a type="button" class="btn btn-lg btn-outline-primary me-2" asp-controller="User" asp-action="SignIn">
-                        Войти
-                    </a>
-                    <a type="button" class="btn btn-primary btn-lg" asp-controller="User" asp-action="SignUp">
-                        Регистрация
-                    </a>
-                </div>
+                @if (User?.Identity?.IsAuthenticated ?? false)
+                {
+                    <div class="d-flex ms-auto">
+                        <a type="button" class="btn btn-lg btn-outline-primary me-2" asp-controller="Account" asp-action="Index">
+                            Профиль
+                        </a>
+                        @if (User.IsInRole("admin"))
+                        {
+                            <a type="button" class="btn btn-lg btn-outline-primary me-2" asp-controller="Account" asp-action="Admin">
+                                Админка
+                            </a>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="d-flex ms-auto">
+                        <a type="button" class="btn btn-lg btn-outline-primary me-2" asp-controller="Account" asp-action="Login">
+                            Войти
+                        </a>
+                        <a type="button" class="btn btn-primary btn-lg" asp-controller="Account" asp-action="Register">
+                            Регистрация
+                        </a>
+                    </div>
+                }
             </div>
         </div>
     </nav>

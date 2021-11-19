@@ -1,0 +1,22 @@
+﻿@model User
+@{
+    ViewData["Title"] = "Профиль";
+}
+<div class="container">
+    <div class="row">
+        <div class="col rounded-3">
+
+            <p>
+                <img src="@Model.UserPhotoUrl" alt="avatar" width="128px">
+            </p>
+            <p>@Model.Nickname</p>
+            <p>@User?.Identity?.Name</p>
+            <a asp-controller="Account" asp-action="Logout" class="w-25 btn btn-lg btn-primary">Выйти из аккаунта</a>
+            <a class="w-25 btn btn-lg btn-danger">Редактировать аккаунт</a>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-8">Купленные игры тут</div>
+        <div class="col-4">Друзья</div>
+    </div>
+</div>
