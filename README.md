@@ -24,3 +24,12 @@
   <li><b>PostgreSQL</b></li>
 </ul>
 <h2>Начало работы</h2>
+<p>Нужно скачать следующие вещи:</p>
+<ul>
+  <li>.NET 6</li>
+  <li>PostgreSQL</li>
+</ul>
+<p>В файле Startup.cs найти код:</p><code>services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(Configuration.GetConnectionString("IskanderConnection")));</code>  
+  <p></p>
+  <p>В параметры GetConnectionString() отправить свою строку подключения. Её можно найти в файле appsettings.json, там же эту строку можно отредактировать под себя</p>
+<p>Готово! Запускаем проект с помощью IDE или с помощью командной строки, введя <code>dotnet watch</code></p>
