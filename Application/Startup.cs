@@ -1,4 +1,6 @@
+using Application.Data;
 using Application.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace Application;
 
@@ -14,6 +16,11 @@ public class Startup
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
+        services.AddDbContext<ApplicationContext>(options =>
+            options.UseNpgsql(Configuration.GetConnectionString("IskanderConnection")));
+        services.AddIdentity<User, IdentityRole>()
+            .AddEntityFrameworkStores<ApplicationContext>()
+            .AddDefaultTokenProviders();
         services.AddControllersWithViews();
         services.AddRazorPages().AddRazorRuntimeCompilation();
         services.AddDbContext<ApplicationContext>();
@@ -41,6 +48,7 @@ public class Startup
 
         app.UseRouting();
 
+        app.UseAuthentication();
         app.UseAuthorization();
 
 

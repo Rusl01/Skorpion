@@ -1,8 +1,15 @@
-﻿namespace Application.Models;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 
-public class User
+namespace Application.Models;
+
+public class User : IdentityUser
 {
-    public int Id { get; set; }
+    [Required]
+    [Column("nickname")]
+    [Display(Name = "Nickname")]
     public string Nickname { get; set; }
-    public List<Role> Roles { get; set; } = new();
+    [Display(Name = "UserPhotoUrl")] 
+    public string UserPhotoUrl { get; set; }
 }

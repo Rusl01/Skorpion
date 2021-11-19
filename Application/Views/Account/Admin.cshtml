@@ -1,0 +1,31 @@
+﻿@model IQueryable<User>
+@{
+    ViewData["Title"] = "Админка";
+}
+<div class="container">
+    <table class="table">
+        <tr>
+            <th>Id</th>
+            <th>User Photo</th>
+            <th>Nickname</th>
+            <th>Email</th>
+            <th>User Name</th>
+            <th>Action</th>
+        </tr>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Id</td>
+                <td>
+                    <img src="@user.UserPhotoUrl" alt="Avatar" width="64px">
+                </td>
+                <td>@user.Nickname</td>
+                <td>@user.Email</td>
+                <td>@user.UserName</td>
+                <td>
+                    <a asp-controller="Account" asp-action="Remove" asp-route-id="@user.Id">Удалить</a>
+                </td>
+            </tr>
+        }
+    </table>
+</div>

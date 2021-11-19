@@ -1,11 +1,4 @@
-﻿INSERT INTO roles (name)
-VALUES ('customer');
-INSERT INTO roles (name)
-VALUES ('developer');
-INSERT INTO roles (name)
-VALUES ('admin');
-
-INSERT INTO genres (name)
+﻿INSERT INTO genres (name)
 VALUES ('RPG');
 INSERT INTO genres (name)
 VALUES ('Action Real Time Strategy');
@@ -31,9 +24,6 @@ INSERT INTO players (name)
 VALUES ('Кооперативная игра');
 INSERT INTO players (name)
 VALUES ('Многопользовательская игра');
-
-INSERT INTO users (nickname)
-VALUES ('taiiiga');
 
 INSERT INTO games (id, title, release_date, description, cover, price)
 VALUES (1, 'Dota 2', '2011-10-21',
@@ -99,9 +89,3 @@ INSERT INTO games_players
 VALUES (5, 2);
 INSERT INTO games_players
 VALUES (6, 3);
-
-INSERT INTO users_roles
-VALUES (1, 3);
-
-INSERT INTO users_games
-VALUES (1, 1);

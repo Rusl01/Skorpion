@@ -14,11 +14,11 @@
             @foreach (var item in ViewBag.cart)
             {
                 <tr>
-                    <td>@item.Game.Id</td>
-                    <td>@item.Game.Title</td>
-                    <td>@item.Game.Price</td>
+                    <td>@if (ViewBag.cook == 0) {@item.Game.Id} else {@item.Id}</td>
+                    <td>@if (ViewBag.cook == 0) {@item.Game.Title} else {@item.Title}</td>
+                    <td>@if (ViewBag.cook == 0) {@item.Game.Price} else {@item.Price}</td>
                     <td>
-                        <a asp-controller="cart" asp-action="remove" asp-route-id="@item.Game.Id">Удалить</a>
+                        <a asp-controller="cart" asp-action="remove" asp-route-id="@if (ViewBag.cook == 0) {@item.Game.Id} else {@item.Id}">Удалить</a>
                     </td>
                 </tr>
             }
@@ -31,6 +31,6 @@
         </table>
         <br>
         <a asp-controller="Catalog" asp-action="index" class="w-100 btn btn-lg btn-primary">Продолжить покупки</a>
-        <button class="w-100 btn btn-lg btn-primary mt-1" type="submit">Оформить заказ</button>
+        <button class="w-100 btn btn-lg btn-danger mt-1" type="submit">Оформить заказ</button>
     </form>
 </div>

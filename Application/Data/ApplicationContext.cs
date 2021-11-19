@@ -1,9 +1,10 @@
-﻿namespace Application.Models;
+﻿using Application.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
-public class ApplicationContext : DbContext
+namespace Application.Data;
+
+public class ApplicationContext : IdentityDbContext<User>
 {
-    public DbSet<User> Users { get; set; }
-    public DbSet<Role> Roles { get; set; }
     public DbSet<Game> Games { get; set; }
     public DbSet<Genre> Genres { get; set; }
     public DbSet<Platform> Platforms { get; set; }
@@ -11,13 +12,12 @@ public class ApplicationContext : DbContext
     public DbSet<GameGenre> GameGenres { get; set; }
     public DbSet<GamePlatform> GamePlatforms { get; set; }
     public DbSet<GamePlayer> GamePlayers { get; set; }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    public DbSet<CartItem> CartItems { get; set; }
+    
+    public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
     {
-        //optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=store;Username=postgres;Password=postgres");
-        optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=1234");
     }
-
+    
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
