@@ -58,7 +58,7 @@ public class CatalogController : Controller
 
         return View(catalogViewModel);
     }
-
+    
     private IEnumerable<Game> SortSearchGames(string sortOrder, string searchString)
     {
         ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";

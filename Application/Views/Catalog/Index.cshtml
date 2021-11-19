@@ -16,7 +16,7 @@
                             <a class="dropdown-item" asp-controller="Catalog" asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]">по дате</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" asp-controller="Catalog" asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">по наименованию</a>
+                            <a class="dropdown-item" a sp-controller="Catalog" asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">по наименованию</a>
                         </li>
                     </ul>
                 </div>
@@ -76,7 +76,7 @@
                         </ul>
                     </div>
                     <button class="btn btn-outline-secondary" type="submit">Показать</button>
-                    <button class="btn btn-outline-secondary" type="button">Очистить фильтры</button>
+                    <button class="btn btn-outline-secondary" onClick="window.location.href=window.location.href" type="button">Очистить фильтры</button>
                 </form>
                 <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#searchCatalog" aria-controls="searchCatalog" aria-expanded="false" aria-label="Search Catalog">
                     <span class="ti-search"></span>
