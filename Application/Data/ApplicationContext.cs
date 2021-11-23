@@ -13,6 +13,7 @@ public class ApplicationContext : IdentityDbContext<User>
     public DbSet<GamePlatform> GamePlatforms { get; set; }
     public DbSet<GamePlayer> GamePlayers { get; set; }
     public DbSet<CartItem> CartItems { get; set; }
+    public DbSet<Key> Keys { get; set; }
     
     public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
     {

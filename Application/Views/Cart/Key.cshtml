@@ -1,0 +1,11 @@
+﻿@{
+    ViewData["Title"] = "Ключ от игры";
+}
+<div class="mt-3 h-100 row align-items-center text-center">
+    <h1>Спасибо за покупку</h1>
+    <h2>Ваш код от игры</h2>
+    @foreach (var item in ViewBag.keys)
+    {
+        <h3>@item</h3>
+    }
+</div>

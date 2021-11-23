@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Key = Application.Models.Key;
 
 namespace Application.Controllers;
 
@@ -27,7 +28,14 @@ public class AccountController : Controller
     public async Task<IActionResult> Index()
     {
         var user = await _userManager.GetUserAsync(HttpContext.User);
-        return View(user);
+        var keyGames = new Dictionary<Guid, Game>();
+        List<Key> keys = db.Keys.Where(x => x.UserId == user.Id).ToList();
+        foreach (var key in keys)
+        {
+            Game game = db.Games.First(x => x.Id == key.GameId);
+            keyGames.Add(key.Id, game);
+        }
+        return View(new ProfileViewModel{User = user, KeyGames = keyGames});
     }
     
     [HttpGet]
