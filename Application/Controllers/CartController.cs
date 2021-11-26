@@ -3,6 +3,7 @@ using Application.Data;
 using Application.Helpers;
 using Application.Models;
 using Application.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -137,6 +138,7 @@ public class CartController : Controller
         return View();
     }
 
+    [AllowAnonymous]
     public IActionResult Index()
     {
         if ((User.Identity != null && !User.Identity.IsAuthenticated) || User.Identity == null)

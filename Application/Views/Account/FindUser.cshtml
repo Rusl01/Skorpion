@@ -1,0 +1,38 @@
+﻿@model Application.ViewModels.FindUserViewModel
+@{
+    ViewData["Title"] = "Найти пользователя";
+}
+<div class="container">
+    <form method="get">
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="floatingInput" asp-for="Nickname" placeholder="2pac" value="">
+            <label for="floatingInput" asp-for="Nickname">Псевдоним</label>
+        </div>
+        <button class="w-100 btn btn-lg btn-primary" type="submit">Найти</button>
+    </form>
+    <table class="table">
+        <tr>
+            <th>Id</th>
+            <th>User Photo</th>
+            <th>Nickname</th>
+            <th>Email</th>
+            <th>User Name</th>
+            <th>Action</th>
+        </tr>
+        @foreach (var user in Model?.Users!)
+        {
+            <tr>
+                <td>@user.Id</td>
+                <td>
+                    <img src="@user.UserPhotoUrl" alt="Avatar" width="64px">
+                </td>
+                <td>@user.Nickname</td>
+                <td>@user.Email</td>
+                <td>@user.UserName</td>
+                <td>
+                    <a asp-controller="Account" asp-action="Index" asp-route-id="@user.UserName">Профиль</a>
+                </td>
+            </tr>
+        }
+    </table>
+</div>

@@ -14,6 +14,7 @@ public class ApplicationContext : IdentityDbContext<User>
     public DbSet<GamePlayer> GamePlayers { get; set; }
     public DbSet<CartItem> CartItems { get; set; }
     public DbSet<Key> Keys { get; set; }
+    public DbSet<Friend> Friends { get; set; }
     
     public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
     {
@@ -26,5 +27,6 @@ public class ApplicationContext : IdentityDbContext<User>
         builder.Entity<GameGenre>().HasKey(i => new {i.GameId, i.GenreId});
         builder.Entity<GamePlatform>().HasKey(i => new {i.GameId, i.PlatformId});
         builder.Entity<GamePlayer>().HasKey(i => new {i.GameId, i.PlayerId});
+        builder.Entity<Friend>().HasKey(i => new {i.FirstUserId, i.SecondUserId});
     }
 }

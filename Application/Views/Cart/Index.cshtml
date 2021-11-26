@@ -31,6 +31,9 @@
         </table>
         <br>
         <a asp-controller="Catalog" asp-action="index" class="w-100 btn btn-lg btn-primary">Продолжить покупки</a>
-        <a asp-controller="Cart" asp-action="Checkout" class="w-100 btn btn-lg btn-primary mt-1">Оформить заказ</a>
+        @if (ViewBag.cart.Count > 0)
+        {
+            <a asp-controller="Cart" asp-action="Checkout" class="w-100 btn btn-lg btn-primary mt-1">Оформить заказ</a>
+        }
     </div>
 </div>
