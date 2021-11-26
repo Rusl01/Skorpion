@@ -36,13 +36,24 @@ public class AccountController : Controller
             var game = _db.Games.First(x => x.Id == key.GameId);
             keyGames.Add(key.Id, game);
         }
-        
-        var addFriend = user.Id != _userManager.GetUserAsync(HttpContext.User).Result.Id;
-        
+
         var friendIds = _db.Friends
             .Where(x => x.FirstUserId == user.Id || x.SecondUserId == user.Id).ToList()
             .Select(friend => friend.FirstUserId == user.Id ? friend.SecondUserId : friend.FirstUserId).ToList();
         var friends = friendIds.Select(friendId => _db.Users.First(x => x.Id == friendId)).ToList();
+
+        var currentUser = _userManager.GetUserAsync(HttpContext.User).Result;
+        var currentUserFriendIds = _db.Friends
+            .Where(x => x.FirstUserId == currentUser.Id || x.SecondUserId == currentUser.Id).ToList()
+            .Select(friend => friend.FirstUserId == currentUser.Id ? friend.SecondUserId : friend.FirstUserId).ToList();
+        var currentUserFriends = friendIds.Select(friendId => _db.Users.First(x => x.Id == friendId)).ToList();
+        var addFriend = false;
+        if (user != null)
+        {
+            addFriend = !currentUserFriends.Contains(_db.Users.First(x => x.UserName == id));
+        }
+        
+        
         return View(new ProfileViewModel{User = user, KeyGames = keyGames, AddFriend = addFriend, Friends = friends});
     }
     
@@ -136,7 +147,6 @@ public class AccountController : Controller
     
     public async Task<IActionResult> AddFriend(string id)
     {
-        Console.WriteLine("AddFriend");
         await _db.Friends.AddAsync(new Friend
         {
             FirstUserId = _userManager.GetUserAsync(HttpContext.User).Result.Id,
@@ -145,7 +155,15 @@ public class AccountController : Controller
             SecondUser = _db.Users.First(x => x.UserName == id)
         });
         await _db.SaveChangesAsync();
-        Console.WriteLine("SavesChanges");
+        return RedirectToAction("Index", new { id });
+    }
+    
+    public async Task<IActionResult> RemoveFriend(string id)
+    {
+        var userId = _userManager.GetUserAsync(HttpContext.User).Result.Id;
+        var friend = _db.Users.First(x => x.UserName == id);
+        _db.Friends.Remove(_db.Friends.First(x => (x.FirstUserId == friend.Id && x.SecondUserId == userId) || (x.SecondUserId == friend.Id && x.FirstUserId == userId)));
+        await _db.SaveChangesAsync();
         return RedirectToAction("Index", new { id });
     }
     

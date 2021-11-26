@@ -23,6 +23,7 @@
                 <td>@user.Email</td>
                 <td>@user.UserName</td>
                 <td>
+                    <a asp-controller="Account" asp-action="Index" asp-route-id="@user.UserName">Профиль</a>
                     <a asp-controller="Account" asp-action="Remove" asp-route-id="@user.Id">Удалить</a>
                 </td>
             </tr>

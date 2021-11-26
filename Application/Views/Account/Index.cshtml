@@ -7,15 +7,26 @@
         <div class="col rounded-3">
             <h2>Информация</h2>
             <p>
-                <img src="@Model!.User.UserPhotoUrl" alt="avatar" width="128px">
+                <img src="@Model!.User.UserPhotoUrl" alt="avatar" width="128px" style="border-radius: 50%">
             </p>
             <p>@Model.User.Nickname</p>
             <p>@User?.Identity?.Name</p>
             <a asp-controller="Account" asp-action="Logout" class="w-25 btn btn-lg btn-primary">Выйти из аккаунта</a>
             <a class="w-25 btn btn-lg btn-danger">Редактировать аккаунт</a>
-            @if (Model.AddFriend)
+            @if (Model.User.UserName != User.Identity?.Name)
             {
-                <a asp-controller="Account" asp-action="AddFriend" asp-route-id="@Model.User.UserName" class="w-25 btn btn-lg btn-primary">Добавить в друзья</a>
+                @if (Model.AddFriend)
+                {
+                    <a asp-controller="Account" asp-action="AddFriend" asp-route-id="@Model.User.UserName" class="w-25 btn btn-lg btn-primary">Добавить в друзья</a>
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="RemoveFriend" asp-route-id="@Model.User.UserName" class="w-25 btn btn-lg btn-primary">Удалить из друзей</a>
+                }
+            }
+            @if (User.Identity?.Name == Model.User.UserName)
+            {
+                <a asp-controller="Account" asp-action="FindUser" class="w-25 btn btn-lg btn-primary">Найти пользователя</a>
             }
         </div>
     </div>
@@ -30,13 +41,13 @@
         </div>
         <div class="col-4">
             <h2>Друзья</h2>
-            @if (User.Identity?.Name == Model.User.UserName)
-            {
-                <a asp-controller="Account" asp-action="FindUser" class="w-25 btn btn-lg btn-primary">Найти пользователя</a>
-            }
             @foreach (var friend in Model.Friends)
             {
-                <p><b><a asp-controller="Account" asp-action="Index" asp-route-id="@friend.UserName">@friend.Nickname</a></b></p>
+                <p>
+                    <b>
+                        <a asp-controller="Account" asp-action="Index" asp-route-id="@friend.UserName">@friend.Nickname</a>
+                    </b>
+                </p>
             }
         </div>
     </div>
