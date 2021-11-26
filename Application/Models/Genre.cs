@@ -1,13 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.Build.Framework;
 
 namespace Application.Models;
 
-[Table("genres")]
+
 public class Genre
 {
-    [Column("id")] public int Id { get; set; }
+    public int Id { get; set; }
 
-    [Column("name")] public string Name { get; set; }
+    [Required] public string Name { get; set; }
 
     [NotMapped] public bool Selected { get; set; }
 

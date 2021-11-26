@@ -17,7 +17,7 @@
                 @if (User?.Identity?.IsAuthenticated ?? false)
                 {
                     <div class="d-flex ms-auto">
-                        <a type="button" class="btn btn-lg btn-outline-primary me-2" asp-controller="Account" asp-action="Index">
+                        <a type="button" class="btn btn-lg btn-outline-primary me-2" asp-controller="Account" asp-action="Index" asp-route-id="@User.Identity.Name">
                             Профиль
                         </a>
                         @if (User.IsInRole("admin"))

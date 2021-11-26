@@ -1,21 +1,22 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.Build.Framework;
 
 namespace Application.Models;
 
-[Table("games")]
+
 public class Game
 {
-    [Column("id")] public int Id { get; set; }
+    public int Id { get; set; }
 
-    [Column("title")] public string Title { get; set; }
+    [Required] public string Title { get; set; }
 
-    [Column("release_date")] public DateTime ReleaseDate { get; set; }
+    [Required] public DateTime ReleaseDate { get; set; }
 
-    [Column("description")] public string Description { get; set; }
+    [Required] public string Description { get; set; }
 
-    [Column("cover")] public string Cover { get; set; }
+    [Required] public string Cover { get; set; }
 
-    [Column("price")] public double Price { get; set; }
+    [Required] public double Price { get; set; }
 
     public ICollection<GameGenre> Genres { get; set; }
 }

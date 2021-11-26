@@ -10,17 +10,17 @@ namespace Application.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-    private readonly ApplicationContext db;
+    private readonly ApplicationContext _db;
 
     public HomeController(ILogger<HomeController> logger, ApplicationContext context)
     {
         _logger = logger;
-        db = context;
+        _db = context;
     }
 
     public IActionResult Index()
     {
-        var games = db.Games.ToList();
+        var games = _db.Games.ToList();
         return View(games);
     }
 

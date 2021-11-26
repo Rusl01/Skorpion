@@ -1,6 +1,9 @@
-﻿using Application.Data;
+﻿using System.Threading.Tasks;
+using Application.Data;
 using Application.Helpers;
 using Application.Models;
+using Application.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,13 +20,125 @@ public class CartController : Controller
         _db = context;
         _userManager = userManager;
     }
-
+    
     public IActionResult Checkout()
     {
-        Console.WriteLine("Cart Checkout");
+        if ((User.Identity != null && !User.Identity.IsAuthenticated) || User.Identity == null)
+        {
+            var cart = HttpContext.Session.GetObjectFromJson<List<Item>>("cart");
+            if (cart != null)
+            {
+                ViewBag.cart = cart;
+                ViewBag.total = cart.Aggregate(0.0, (current, item) => current + item.Game.Price);
+                ViewBag.cook = 0;
+            }
+            else
+            {
+                ViewBag.cart = new List<Item>();
+                ViewBag.total = 0.0;
+                ViewBag.cook = 0;
+            }
+        }
+        else
+        {
+            User currentUser = _userManager.GetUserAsync(HttpContext.User).Result;
+            List<CartItem> cart = _db.CartItems.Where(c => c.UserId == currentUser.Id).ToList();
+            List<Game> cartGames = new List<Game>();
+            for (int i = 0; i < cart.Count(); i++)
+            {
+                cartGames.Add(_db.Games.First(x => x.Id.ToString() == cart[i].GameId));
+            }
+            if (cartGames.Any())
+            {
+                Console.WriteLine("Корзина не пуста");
+                ViewBag.cart = cartGames;
+                ViewBag.total = cartGames.Aggregate(0.0, (current, item) => current + item.Price);
+                ViewBag.cook = 1;
+            }
+            else
+            {
+                Console.WriteLine("Корзина пуста");
+                ViewBag.cart = new List<Item>();
+                ViewBag.total = 0.0;
+                ViewBag.cook = 1;
+            }
+        }
+        return View();
+    }
+    
+    [HttpPost]
+    public IActionResult Checkout(CheckoutViewModel model)
+    {
+        return RedirectToAction("Key");
+    }
+
+    public IActionResult Key()
+    {
+        if ((User.Identity != null && !User.Identity.IsAuthenticated) || User.Identity == null)
+        {
+            var cart = HttpContext.Session.GetObjectFromJson<List<Item>>("cart");
+            if (cart != null)
+            {
+                ViewBag.cart = cart;
+                ViewBag.total = cart.Aggregate(0.0, (current, item) => current + item.Game.Price);
+                ViewBag.cook = 0;
+                List<string> keys = new List<string>();
+                foreach (var item in ViewBag.cart)
+                {
+                    Guid token = Guid.NewGuid();
+                    _db.Keys.Add(new Key {Id = token, GameId = item.Game.Id, UserId = null});
+                    keys.Add(token.ToString());
+                    Console.WriteLine(token.ToString());
+                    
+                }
+                _db.SaveChanges();
+                ViewBag.keys = keys;
+            }
+            else
+            {
+                ViewBag.cart = new List<Item>();
+                ViewBag.total = 0.0;
+                ViewBag.cook = 0;
+            }
+        }
+        else
+        {
+            User currentUser = _userManager.GetUserAsync(HttpContext.User).Result;
+            List<CartItem> cart = _db.CartItems.Where(c => c.UserId == currentUser.Id).ToList();
+            List<Game> cartGames = new List<Game>();
+            for (int i = 0; i < cart.Count(); i++)
+            {
+                cartGames.Add(_db.Games.First(x => x.Id.ToString() == cart[i].GameId));
+            }
+            if (cartGames.Any())
+            {
+                Console.WriteLine("Корзина не пуста");
+                ViewBag.cart = cartGames;
+                ViewBag.total = cartGames.Aggregate(0.0, (current, item) => current + item.Price);
+                ViewBag.cook = 1;
+                List<string> keys = new List<string>();
+                foreach (var item in ViewBag.cart)
+                {
+                    Guid token = Guid.NewGuid();
+                    _db.Keys.Add(new Key {Id = token, GameId = item.Id, UserId = currentUser.Id});
+                    keys.Add(token.ToString());
+                    Console.WriteLine(token.ToString());
+                }
+                _db.SaveChanges();
+                ViewBag.keys = keys;
+            }
+            else
+            {
+                Console.WriteLine("Корзина пуста");
+                ViewBag.cart = new List<Item>();
+                ViewBag.total = 0.0;
+                ViewBag.cook = 1;
+            }
+        }
         return View();
     }
 
+    [AllowAnonymous]
     public IActionResult Index()
     {
         if ((User.Identity != null && !User.Identity.IsAuthenticated) || User.Identity == null)
@@ -55,7 +170,7 @@ public class CartController : Controller
             {
                 Console.WriteLine("Корзина не пуста");
                 ViewBag.cart = cartGames;
-                ViewBag.total = 0.0;
+                ViewBag.total = cartGames.Aggregate(0.0, (current, item) => current + item.Price);
                 ViewBag.cook = 1;
             }
             else
@@ -157,7 +272,6 @@ public class CartController : Controller
                 if (cartGames[i].Id.ToString() == id) return cartGames[i].Id;
             }
         }
-
         return -1;
     }
 }
