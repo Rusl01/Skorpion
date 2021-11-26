@@ -27,7 +27,7 @@
 <p>Нужно скачать следующие вещи:</p>
 <ul>
   <li>.NET 6</li>
-  <li>PostgreSQL</li>
+  <li>PostgreSQL 14.1</li>
 </ul>
 <p>В файле Startup.cs найти код:</p><code>services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(Configuration.GetConnectionString("IskanderConnection")));</code>  
 <p></p>
