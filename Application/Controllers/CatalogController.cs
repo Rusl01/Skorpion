@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Controllers;
 
+/// <summary>
+/// Контроллер для управления каталогом
+/// </summary>
 public class CatalogController : Controller
 {
     private readonly ApplicationContext _db;
@@ -15,6 +18,9 @@ public class CatalogController : Controller
         _db = context;
     }
 
+    /// <summary>
+    /// Страница каталога
+    /// </summary>
     [HttpGet]
     [AllowAnonymous]
     public IActionResult Index(string sortOrder, string searchString)
@@ -28,7 +34,9 @@ public class CatalogController : Controller
         return View(catalogViewModel);
     }
 
-    // Нужен рефакторинг
+    /// <summary>
+    /// POST запрос фильтрации и поиска игр в каталоге
+    /// </summary>
     [HttpPost]
     public IActionResult Index(string sortOrder, string searchString, CatalogViewModel catalogViewModel)
     {
@@ -60,7 +68,10 @@ public class CatalogController : Controller
 
         return View(catalogViewModel);
     }
-    
+
+    /// <summary>
+    /// Функция поиска игр
+    /// </summary>
     private IEnumerable<Game> SortSearchGames(string sortOrder, string searchString)
     {
         ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";

@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.Build.Framework;
+﻿using Microsoft.Build.Framework;
 
 namespace Application.Models;
 

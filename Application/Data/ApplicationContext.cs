@@ -15,11 +15,11 @@ public class ApplicationContext : IdentityDbContext<User>
     public DbSet<CartItem> CartItems { get; set; }
     public DbSet<Key> Keys { get; set; }
     public DbSet<Friend> Friends { get; set; }
-    
+
     public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
     {
     }
-    
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

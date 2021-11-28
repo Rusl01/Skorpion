@@ -5,30 +5,34 @@ using Application.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Key = Application.Models.Key;
 
 namespace Application.Controllers;
 
+/// <summary>
+/// Контроллер для управления аутентификацией, авторизацией и регистрацией
+/// </summary>
 [Authorize]
 public class AccountController : Controller
 {
-    private readonly UserManager<User> _userManager;
-    private readonly SignInManager<User> _signInManager;
     private readonly ApplicationContext _db;
-    
-    public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, ApplicationContext context)
+    private readonly SignInManager<User> _signInManager;
+    private readonly UserManager<User> _userManager;
+
+    public AccountController(UserManager<User> userManager, SignInManager<User> signInManager,
+        ApplicationContext context)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _db = context;
     }
-    
+
+    /// <summary>
+    /// Страница профиля
+    /// </summary>
     public async Task<IActionResult> Index(string id)
     {
-        Console.WriteLine("Usernmae User: ", id);
         var user = await _db.Users.FirstOrDefaultAsync(x => x.UserName == id);
-        
+
         var keyGames = new Dictionary<Guid, Game>();
         var keys = _db.Keys.Where(x => x.UserId == user.Id).ToList();
         foreach (var key in keys)
@@ -48,23 +52,26 @@ public class AccountController : Controller
             .Select(friend => friend.FirstUserId == currentUser.Id ? friend.SecondUserId : friend.FirstUserId).ToList();
         var currentUserFriends = friendIds.Select(friendId => _db.Users.First(x => x.Id == friendId)).ToList();
         var addFriend = false;
-        if (user != null)
-        {
-            addFriend = !currentUserFriends.Contains(_db.Users.First(x => x.UserName == id));
-        }
-        
-        
-        return View(new ProfileViewModel{User = user, KeyGames = keyGames, AddFriend = addFriend, Friends = friends});
+        if (user != null) addFriend = !currentUserFriends.Contains(_db.Users.First(x => x.UserName == id));
+
+
+        return View(new ProfileViewModel {User = user, KeyGames = keyGames, AddFriend = addFriend, Friends = friends});
     }
-    
+
+    /// <summary>
+    /// Страница списка всех пользователей
+    /// </summary>
     [HttpGet]
-    [Authorize(Roles="admin")]
+    [Authorize(Roles = "admin")]
     public IActionResult Admin()
     {
         var users = _userManager.Users;
         return View(users);
     }
 
+    /// <summary>
+    /// Страница поиска пользователя
+    /// </summary>
     [HttpGet]
     public IActionResult FindUser(FindUserViewModel model)
     {
@@ -72,79 +79,86 @@ public class AccountController : Controller
         return View(new FindUserViewModel {Users = users, Nickname = model.Nickname});
     }
 
+    /// <summary>
+    /// Страница регистрации
+    /// </summary>
     [HttpGet]
     [AllowAnonymous]
     public IActionResult Register()
     {
         return View();
     }
-    
+
+    /// <summary>
+    /// Страница авторизации
+    /// </summary>
     [HttpGet]
     [AllowAnonymous]
     public IActionResult Login()
     {
         return View();
     }
-    
+
+    /// <summary>
+    /// POST запрос авторизации пользователя
+    /// </summary>
     [HttpPost]
     [AllowAnonymous]
     public async Task<IActionResult> Login(LoginViewModel user)
     {
-        if (ModelState.IsValid)
-        {
-            var result = await _signInManager.PasswordSignInAsync(user.Email, user.Password, user.RememberMe, false);
-
-            if (result.Succeeded)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-
-            ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
-        }
+        if (!ModelState.IsValid) return View(user);
+        var result = await _signInManager.PasswordSignInAsync(user.Email, user.Password, user.RememberMe, false);
+        if (result.Succeeded) return RedirectToAction("Index", "Home");
+        ModelState.AddModelError(string.Empty, "Неправильный логин или пароль");
+        
         return View(user);
-    } 
+    }
 
+    /// <summary>
+    /// POST запрос регистрации пользователя
+    /// </summary>
     [HttpPost]
     [AllowAnonymous]
     public async Task<IActionResult> Register(RegisterViewModel model)
     {
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid) return View(model);
+        var user = new User
         {
-            var user = new User
-            {
-                UserPhotoUrl = model.UserPhotoUrl,
-                Nickname = model.Nickname,
-                UserName = model.Email,
-                Email = model.Email,
-            };
+            UserPhotoUrl = model.UserPhotoUrl,
+            Nickname = model.Nickname,
+            UserName = model.Email,
+            Email = model.Email
+        };
 
-            var result = await _userManager.CreateAsync(user, model.Password);
+        var result = await _userManager.CreateAsync(user, model.Password);
 
-            if (result.Succeeded)
-            {
-                await _signInManager.SignInAsync(user, isPersistent: false);
+        if (result.Succeeded)
+        {
+            await _signInManager.SignInAsync(user, false);
 
-                return RedirectToAction("index", "Home");
-            }
-
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError("", error.Description);
-            }
-
-            ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
-
+            return RedirectToAction("index", "Home");
         }
+
+        foreach (var error in result.Errors) ModelState.AddModelError("", error.Description);
+
+        ModelState.AddModelError(string.Empty, "Неправильный логин или пароль");
+
         return View(model);
     }
-    
+
+    /// <summary>
+    /// POST запрос для разлогинирования
+    /// </summary>
     public async Task<IActionResult> Logout()
     {
         await _signInManager.SignOutAsync();
 
         return RedirectToAction("Login");
     }
-    
+
+    /// <summary>
+    /// POST запрос добавления друга по id
+    /// </summary>
     public async Task<IActionResult> AddFriend(string id)
     {
         await _db.Friends.AddAsync(new Friend
@@ -155,23 +169,34 @@ public class AccountController : Controller
             SecondUser = _db.Users.First(x => x.UserName == id)
         });
         await _db.SaveChangesAsync();
-        return RedirectToAction("Index", new { id });
+        
+        return RedirectToAction("Index", new {id});
     }
-    
+
+    /// <summary>
+    /// POST запрос удаления друга по id
+    /// </summary>
     public async Task<IActionResult> RemoveFriend(string id)
     {
         var userId = _userManager.GetUserAsync(HttpContext.User).Result.Id;
         var friend = _db.Users.First(x => x.UserName == id);
-        _db.Friends.Remove(_db.Friends.First(x => (x.FirstUserId == friend.Id && x.SecondUserId == userId) || (x.SecondUserId == friend.Id && x.FirstUserId == userId)));
+        _db.Friends.Remove(_db.Friends.First(x =>
+            x.FirstUserId == friend.Id && x.SecondUserId == userId ||
+            x.SecondUserId == friend.Id && x.FirstUserId == userId));
         await _db.SaveChangesAsync();
-        return RedirectToAction("Index", new { id });
+        
+        return RedirectToAction("Index", new {id});
     }
-    
+
+    /// <summary>
+    /// POST запрос удаления пользователя
+    /// </summary>
     public async Task<IActionResult> Remove(string id)
     {
         var user = await _userManager.FindByIdAsync(id);
         _db.Users.Remove(user);
         await _db.SaveChangesAsync();
+        
         return RedirectToAction("Admin");
     }
 }
