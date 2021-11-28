@@ -1,15 +1,16 @@
-﻿using System.Threading.Tasks;
-using Application.Data;
+﻿using Application.Data;
 using Application.Helpers;
 using Application.Models;
 using Application.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.Controllers;
 
+/// <summary>
+/// Контроллер для управления корзиной
+/// </summary>
 public class CartController : Controller
 {
     private readonly ApplicationContext _db;
@@ -20,7 +21,10 @@ public class CartController : Controller
         _db = context;
         _userManager = userManager;
     }
-    
+
+    /// <summary>
+    /// Страница оформления заказа
+    /// </summary>
     public IActionResult Checkout()
     {
         if ((User.Identity != null && !User.Identity.IsAuthenticated) || User.Identity == null)
@@ -48,6 +52,7 @@ public class CartController : Controller
             {
                 cartGames.Add(_db.Games.First(x => x.Id.ToString() == cart[i].GameId));
             }
+
             if (cartGames.Any())
             {
                 Console.WriteLine("Корзина не пуста");
@@ -63,15 +68,22 @@ public class CartController : Controller
                 ViewBag.cook = 1;
             }
         }
+
         return View();
     }
-    
+
+    /// <summary>
+    /// POST запрос на кнопку "Купить" на странице оформление заказа
+    /// </summary>
     [HttpPost]
     public IActionResult Checkout(CheckoutViewModel model)
     {
         return RedirectToAction("Key");
     }
 
+    /// <summary>
+    /// Страница выдачи ключей от игр
+    /// </summary>
     public IActionResult Key()
     {
         if ((User.Identity != null && !User.Identity.IsAuthenticated) || User.Identity == null)
@@ -89,8 +101,8 @@ public class CartController : Controller
                     _db.Keys.Add(new Key {Id = token, GameId = item.Game.Id, UserId = null});
                     keys.Add(token.ToString());
                     Console.WriteLine(token.ToString());
-                    
                 }
+
                 _db.SaveChanges();
                 ViewBag.keys = keys;
             }
@@ -110,6 +122,7 @@ public class CartController : Controller
             {
                 cartGames.Add(_db.Games.First(x => x.Id.ToString() == cart[i].GameId));
             }
+
             if (cartGames.Any())
             {
                 Console.WriteLine("Корзина не пуста");
@@ -124,6 +137,7 @@ public class CartController : Controller
                     keys.Add(token.ToString());
                     Console.WriteLine(token.ToString());
                 }
+
                 _db.SaveChanges();
                 ViewBag.keys = keys;
             }
@@ -135,9 +149,13 @@ public class CartController : Controller
                 ViewBag.cook = 1;
             }
         }
+
         return View();
     }
 
+    /// <summary>
+    /// Страница корзины
+    /// </summary>
     [AllowAnonymous]
     public IActionResult Index()
     {
@@ -166,6 +184,7 @@ public class CartController : Controller
             {
                 cartGames.Add(_db.Games.First(x => x.Id.ToString() == cart[i].GameId));
             }
+
             if (cartGames.Any())
             {
                 Console.WriteLine("Корзина не пуста");
@@ -186,6 +205,9 @@ public class CartController : Controller
         return View();
     }
 
+    /// <summary>
+    /// POST запрос добавления игры в корзину
+    /// </summary>
     public IActionResult Buy(string id)
     {
         Game product = _db.Games.First(x => x.Id == int.Parse(id));
@@ -214,6 +236,7 @@ public class CartController : Controller
             {
                 cartGames.Add(_db.Games.First(x => x.Id.ToString() == cart[i].GameId));
             }
+
             if (!cartGames.Any())
             {
                 _db.CartItems.Add(new CartItem {UserId = currentUser.Id, GameId = product.Id.ToString()});
@@ -221,14 +244,19 @@ public class CartController : Controller
             else
             {
                 var index = IsExist(id);
-                if (index == -1) _db.CartItems.Add(new CartItem {UserId = currentUser.Id, GameId = product.Id.ToString()});
+                if (index == -1)
+                    _db.CartItems.Add(new CartItem {UserId = currentUser.Id, GameId = product.Id.ToString()});
             }
+
             _db.SaveChanges();
         }
 
         return RedirectToAction("Index");
     }
 
+    /// <summary>
+    /// POST запрос удаления игры из корзины
+    /// </summary>
     public IActionResult Remove(string id)
     {
         if ((User.Identity != null && !User.Identity.IsAuthenticated) || User.Identity == null)
@@ -246,9 +274,13 @@ public class CartController : Controller
             _db.CartItems.Remove(cartitem);
             _db.SaveChanges();
         }
+
         return RedirectToAction("Index");
     }
 
+    /// <summary>
+    /// Функция проверяет есть ли игра с данным id в корзине
+    /// </summary>
     private int IsExist(string id)
     {
         if ((User.Identity != null && !User.Identity.IsAuthenticated) || User.Identity == null)
@@ -267,11 +299,13 @@ public class CartController : Controller
             {
                 cartGames.Add(_db.Games.First(x => x.Id.ToString() == cart[i].GameId));
             }
+
             for (int i = 0; i < cartGames.Count(); i++)
             {
                 if (cartGames[i].Id.ToString() == id) return cartGames[i].Id;
             }
         }
+
         return -1;
     }
 }

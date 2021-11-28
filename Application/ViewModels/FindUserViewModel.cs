@@ -5,8 +5,6 @@ namespace Application.ViewModels;
 
 public class FindUserViewModel
 {
-    [Required]
-    public List<User> Users { get; set; }
-    [Required]
-    public string Nickname { get; set; }
+    [Required] public List<User> Users { get; set; }
+    [Required] public string Nickname { get; set; }
 }
