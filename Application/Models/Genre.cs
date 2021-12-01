@@ -3,6 +3,9 @@ using Microsoft.Build.Framework;
 
 namespace Application.Models;
 
+/// <summary>
+/// Модель жанра игры
+/// </summary>
 public class Genre
 {
     public int Id { get; set; }

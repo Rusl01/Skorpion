@@ -2,6 +2,9 @@
 
 namespace Application.Models;
 
+/// <summary>
+/// Модель связи двух пользователей как друзей
+/// </summary>
 public class Friend
 {
     [Required] public string FirstUserId { get; set; }

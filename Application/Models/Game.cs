@@ -2,6 +2,9 @@
 
 namespace Application.Models;
 
+/// <summary>
+/// Модель игры
+/// </summary>
 public class Game
 {
     public int Id { get; set; }

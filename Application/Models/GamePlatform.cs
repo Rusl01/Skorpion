@@ -2,6 +2,9 @@
 
 namespace Application.Models;
 
+/// <summary>
+/// Модель связи "многие-ко-многим" платформ игр
+/// </summary>
 public class GamePlatform
 {
     [Required] public int GameId { get; set; }

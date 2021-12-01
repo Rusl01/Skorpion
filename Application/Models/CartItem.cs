@@ -2,6 +2,9 @@
 
 namespace Application.Models;
 
+/// <summary>
+/// Модель предмета в корзине для авторизованного пользователя
+/// </summary>
 public class CartItem
 {
     [Key] public int ItemId { get; set; }
