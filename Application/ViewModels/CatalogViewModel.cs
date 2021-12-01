@@ -2,6 +2,9 @@
 
 namespace Application.ViewModels;
 
+/// <summary>
+/// Модель для страницы каталога
+/// </summary>
 public class CatalogViewModel
 {
     public List<Game> Games { get; set; }

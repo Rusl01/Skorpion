@@ -2,6 +2,9 @@
 
 namespace Application.ViewModels;
 
+/// <summary>
+/// Модель для страницы регистрации
+/// </summary>
 public class RegisterViewModel
 {
     public string UserPhotoUrl { get; set; }

@@ -3,6 +3,9 @@ using Application.Models;
 
 namespace Application.ViewModels;
 
+/// <summary>
+/// Модель для страницы оформления заказа
+/// </summary>
 public class CheckoutViewModel
 {
     [Required] public List<CartItem> CartItems { get; set; }

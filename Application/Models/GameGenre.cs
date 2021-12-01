@@ -2,6 +2,9 @@
 
 namespace Application.Models;
 
+/// <summary>
+/// Модель связи "многие-ко-многим" жанры игр
+/// </summary>
 public class GameGenre
 {
     [Required] public int GameId { get; set; }

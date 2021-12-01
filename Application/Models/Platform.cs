@@ -3,6 +3,9 @@ using Microsoft.Build.Framework;
 
 namespace Application.Models;
 
+/// <summary>
+/// Модель платформы игры
+/// </summary>
 public class Platform
 {
     public int Id { get; set; }

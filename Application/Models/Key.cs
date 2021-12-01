@@ -2,6 +2,9 @@
 
 namespace Application.Models;
 
+/// <summary>
+/// Модель ключа от игры
+/// </summary>
 public class Key
 {
     [Required] public Guid Id { get; set; }

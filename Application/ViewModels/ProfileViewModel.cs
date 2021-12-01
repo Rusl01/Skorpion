@@ -3,6 +3,9 @@ using Application.Models;
 
 namespace Application.ViewModels;
 
+/// <summary>
+/// Модель для страницы профиля
+/// </summary>
 public class ProfileViewModel
 {
     [Required] public User User { get; set; }
