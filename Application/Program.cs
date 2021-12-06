@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Logging;
+
 namespace Application;
 
 public class Program
