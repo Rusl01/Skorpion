@@ -88,6 +88,20 @@ public class AccountController : Controller
     {
         return View();
     }
+    
+    /// <summary>
+    /// Страница редактирования пользователя
+    /// </summary>
+    [HttpGet]
+    public IActionResult Update()
+    {
+        var currentUser = _userManager.GetUserAsync(HttpContext.User).Result;
+        var model = new UpdateViewModel
+        {
+            UserPhotoUrl = currentUser.UserPhotoUrl
+        };
+        return View(model);
+    }
 
     /// <summary>
     /// Страница авторизации
@@ -100,7 +114,7 @@ public class AccountController : Controller
     }
 
     /// <summary>
-    /// POST запрос авторизации пользователя
+    /// Авторизация пользователя в системе
     /// </summary>
     [HttpPost]
     [AllowAnonymous]
@@ -115,7 +129,7 @@ public class AccountController : Controller
     }
 
     /// <summary>
-    /// POST запрос регистрации пользователя
+    /// Регистрация пользователя в базе данных
     /// </summary>
     [HttpPost]
     [AllowAnonymous]
@@ -145,9 +159,36 @@ public class AccountController : Controller
 
         return View(model);
     }
+    
+    /// <summary>
+    /// Редактирование пользователя
+    /// </summary>
+    [HttpPost]
+    public async Task<IActionResult> Update(UpdateViewModel model)
+    {
+        if (!ModelState.IsValid) return View(model);
+        var user = _userManager.GetUserAsync(HttpContext.User).Result;
+        user.UserPhotoUrl = model.UserPhotoUrl;
+        user.Nickname = model.Nickname;
+        user.UserName = model.Email;
+        user.Email = model.Email;
+            
+        var result = await _userManager.UpdateAsync(user);
+
+        if (result.Succeeded)
+        {
+            return RedirectToAction("Index", "Home");
+        }
+
+        foreach (var error in result.Errors) ModelState.AddModelError("", error.Description);
+
+        ModelState.AddModelError(string.Empty, "Неправильный логин или пароль");
+
+        return View(model);
+    }
 
     /// <summary>
-    /// POST запрос для разлогинирования
+    /// Разлогинирование пользователя
     /// </summary>
     public async Task<IActionResult> Logout()
     {
@@ -157,7 +198,7 @@ public class AccountController : Controller
     }
 
     /// <summary>
-    /// POST запрос добавления друга по id
+    /// Добавить пользователя с id к текущему пользователю в друзья
     /// </summary>
     public async Task<IActionResult> AddFriend(string id)
     {
@@ -174,7 +215,7 @@ public class AccountController : Controller
     }
 
     /// <summary>
-    /// POST запрос удаления друга по id
+    /// Удаление пользователя с id из списка друзей текущего пользователя
     /// </summary>
     public async Task<IActionResult> RemoveFriend(string id)
     {
@@ -189,7 +230,7 @@ public class AccountController : Controller
     }
 
     /// <summary>
-    /// POST запрос удаления пользователя
+    /// Удаление пользователя из базы данных
     /// </summary>
     public async Task<IActionResult> Remove(string id)
     {

@@ -23,13 +23,15 @@ public class HomeController : Controller
     /// <summary>
     /// Главная страница
     /// </summary>
-    /// <returns>Выдаёт страницу по ссылке "/"</returns>
     public IActionResult Index()
     {
         var games = _db.Games.ToList();
         return View(games);
     }
 
+    /// <summary>
+    /// Страница с ошибкой
+    /// </summary>
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {

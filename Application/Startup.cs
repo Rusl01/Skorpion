@@ -17,7 +17,10 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddDbContext<ApplicationContext>(options =>
-            options.UseNpgsql(Configuration.GetConnectionString("IskanderConnection")));
+        {
+            options.UseNpgsql(Configuration.GetConnectionString("IskanderConnection"));
+            options.EnableSensitiveDataLogging();
+        });
         services.AddIdentity<User, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationContext>()
             .AddDefaultTokenProviders();
