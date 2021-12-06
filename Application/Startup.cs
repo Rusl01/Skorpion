@@ -18,7 +18,7 @@ public class Startup
     {
         services.AddDbContext<ApplicationContext>(options =>
         {
-            options.UseNpgsql(Configuration.GetConnectionString("HerokuConnection"));
+            options.UseNpgsql(Configuration.GetConnectionString("IskanderConnection"));
             options.EnableSensitiveDataLogging();
         });
         services.AddIdentity<User, IdentityRole>()
