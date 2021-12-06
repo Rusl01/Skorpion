@@ -1,0 +1,87 @@
+﻿@model Application.ViewModels.GameViewModel
+@{
+    ViewData["Title"] = "Добавить игру";
+}
+
+<div class="container">
+    <form method="post">
+        <div class="form-floating mb-3">
+            <img id="avatar-img" src="https://stihi.ru/pics/2018/02/08/11668.jpg" alt="Avatar" width="256px" onerror="setImgSrcDefault()">
+        </div>
+        <div class="form-floating mb-3">
+            <input asp-for="Cover" id="avatar-input" type="url" class="form-control">
+            <label asp-for="Cover" for="avatar-input">URL обложки</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input asp-for="Title" type="text" class="form-control" id="floatingInput" placeholder="ivangun">
+            <label asp-for="Title" for="floatingInput">Название</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input asp-for="Description" type="text" class="form-control" id="floatingInput" placeholder="Description">
+            <label asp-for="Description" for="floatingInput">Описание</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input asp-for="ReleaseDate" type="date" class="form-control" id="floatingInput">
+            <label asp-for="ReleaseDate" for="floatingInput">Дата выхода</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input asp-for="Price" type="number" class="form-control" id="floatingInput" placeholder="500">
+            <label asp-for="Price" for="floatingInput">Цена</label>
+        </div>
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuGenre" data-bs-toggle="dropdown" aria-expanded="false">
+                Жанр
+            </button>
+            <ul class="dropdown-menu checkbox-menu allow-focus" aria-labelledby="dropdownMenuGenre">
+                @for (var i = 0; i < Model.Genres.Count; i++)
+                {
+                    <li>
+                        <label>
+                            <input type="checkbox" asp-for="@Model.Genres[i].Selected" checked="@Model.Genres[i].Selected">
+                            @Model.Genres[i].Name
+                            <input type="hidden" asp-for="@Model.Genres[i].Id">
+                            <input type="hidden" asp-for="@Model.Genres[i].Name">
+                        </label>
+                    </li>
+                }
+            </ul>
+        </div>
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuPlatform" data-bs-toggle="dropdown" aria-expanded="false">
+                Платформа
+            </button>
+            <ul class="dropdown-menu checkbox-menu allow-focus" aria-labelledby="dropdownMenuPlatform">
+                @for (var i = 0; i < Model.Platforms.Count; i++)
+                {
+                    <li>
+                        <label>
+                            <input type="checkbox" asp-for="@Model.Platforms[i].Selected" checked="@Model.Platforms[i].Selected">
+                            @Model.Platforms[i].Name
+                            <input type="hidden" asp-for="@Model.Platforms[i].Id">
+                            <input type="hidden" asp-for="@Model.Platforms[i].Name">
+                        </label>
+                    </li>
+                }
+            </ul>
+        </div>
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuPlayers" data-bs-toggle="dropdown" aria-expanded="false">
+                Число игроков
+            </button>
+            <ul class="dropdown-menu checkbox-menu allow-focus" aria-labelledby="dropdownMenuPlayers">
+                @for (var i = 0; i < Model.Players.Count; i++)
+                {
+                    <li>
+                        <label>
+                            <input type="checkbox" asp-for="@Model.Players[i].Selected" checked="@Model.Players[i].Selected">
+                            @Model.Players[i].Name
+                            <input type="hidden" asp-for="@Model.Players[i].Id">
+                            <input type="hidden" asp-for="@Model.Players[i].Name">
+                        </label>
+                    </li>
+                }
+            </ul>
+        </div>
+        <button class="w-100 btn btn-lg btn-primary" type="submit">Добавить</button>
+    </form>
+</div>

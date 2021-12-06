@@ -73,7 +73,7 @@ public class CartController : Controller
     }
 
     /// <summary>
-    /// POST запрос на кнопку "Купить" на странице оформление заказа
+    /// Закончить оформление заказа
     /// </summary>
     [HttpPost]
     public IActionResult Checkout(CheckoutViewModel model)
@@ -206,7 +206,7 @@ public class CartController : Controller
     }
 
     /// <summary>
-    /// POST запрос добавления игры в корзину
+    /// Добавление игры в корзину
     /// </summary>
     public IActionResult Buy(string id)
     {
@@ -255,7 +255,7 @@ public class CartController : Controller
     }
 
     /// <summary>
-    /// POST запрос удаления игры из корзины
+    /// Удаление игры из корзины
     /// </summary>
     public IActionResult Remove(string id)
     {

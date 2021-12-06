@@ -1,0 +1,36 @@
+﻿@model List<Game>
+@{
+    ViewData["Title"] = "Студия разработчика";
+}
+
+<div class="container">
+    <a asp-controller="Developer" asp-action="Create" class="w-25 btn btn-lg btn-primary">Добавить игру</a>
+    <table class="table">
+        <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th>ReleaseDate</th>
+            <th>Description</th>
+            <th>Cover</th>
+            <th>Price</th>
+            <th>Action</th>
+        </tr>
+        @foreach (var game in Model!)
+        {
+            <tr>
+                <td>@game.Id</td>
+                <td>@game.Title</td>
+                <td>@game.ReleaseDate.ToShortDateString()</td>
+                <td>@game.Description</td>
+                <td>
+                    <img src="@game.Cover" alt="Avatar" width="64px">
+                </td>
+                <td>@game.Price</td>
+                <td>
+                    <a asp-controller="Developer" asp-action="Update" asp-route-id="@game.Id">Редактировать</a>
+                    <a asp-controller="Developer" asp-action="Delete" asp-route-id="@game.Id">Удалить</a>
+                </td>
+            </tr>
+        }
+    </table>
+</div>
