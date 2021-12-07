@@ -38,5 +38,4 @@
   <li><code>dotnet ef migrations add InitialCreate</code></li>
   <li><code>dotnet ef database update</code></li>
 </ul>
-<p>Теперь нужно заполнить базу данных. Для этого запускаем data.sql скрипт</p>
 <p>Готово! Запускаем проект с помощью IDE или с помощью командной строки, введя <code>dotnet watch</code></p>
