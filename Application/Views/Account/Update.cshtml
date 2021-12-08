@@ -16,11 +16,11 @@
                 <label asp-for="UserPhotoUrl" for="floatingInput">URL Фотографии</label>
             </div>
             <div class="form-floating mb-3">
-                <input asp-for="Nickname" type="text" class="form-control" id="floatingInput" placeholder="ivangun">
+                <input asp-for="Nickname" type="text" class="form-control" id="floatingInput" placeholder="ivangun" value="@Model.Nickname">
                 <label asp-for="Nickname" for="floatingInput">Псевдоним</label>
             </div>
             <div class="form-floating mb-3">
-                <input asp-for="Email" type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                <input asp-for="Email" type="email" class="form-control" id="floatingInput" placeholder="name@example.com" value="@Model.Email">
                 <label asp-for="Email" for="floatingInput">Электронная почта</label>
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>

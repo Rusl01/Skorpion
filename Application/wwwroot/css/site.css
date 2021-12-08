@@ -113,3 +113,8 @@ header .btn {
     margin-left: 20px;
     margin-right: 20px;
 }
+
+.link-no-style {
+    color: #FFFFFF;
+    text-decoration: none;
+}
