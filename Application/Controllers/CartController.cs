@@ -1,4 +1,5 @@
-﻿using Application.Data;
+﻿using System.Threading.Tasks;
+using Application.Data;
 using Application.Helpers;
 using Application.Models;
 using Application.ViewModels;
@@ -84,7 +85,7 @@ public class CartController : Controller
     /// <summary>
     /// Страница выдачи ключей от игр
     /// </summary>
-    public IActionResult Key()
+    public async Task<IActionResult> Key()
     {
         if ((User.Identity != null && !User.Identity.IsAuthenticated) || User.Identity == null)
         {
@@ -148,6 +149,19 @@ public class CartController : Controller
                 ViewBag.total = 0.0;
                 ViewBag.cook = 1;
             }
+        }
+        
+        if ((User.Identity != null && !User.Identity.IsAuthenticated) || User.Identity == null)
+        {
+            var cart = new List<Item>();
+            HttpContext.Session.SetObjectAsJson("cart", cart);
+        }
+        else
+        {
+            var currentUser = _userManager.GetUserAsync(HttpContext.User).Result;
+            var cartItems = _db.CartItems.Where(u => u.UserId == currentUser.Id);
+            _db.CartItems.RemoveRange(cartItems);
+            await _db.SaveChangesAsync();
         }
 
         return View();

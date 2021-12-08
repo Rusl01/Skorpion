@@ -242,24 +242,19 @@ public class AccountController : Controller
     public async Task<IActionResult> AddFriend(string id)
     {
         var friendsList = _db.Friends.ToList();
-        var idList = new List<string>();
         var currentUser = await _userManager.GetUserAsync(HttpContext.User);
         var user = _db.Users.First(x => x.Id == id);
-        var isFriend = false;
+
+        var idList = new List<string>();
         foreach (var friends in friendsList)
         {
             idList.Add(friends.FirstUserId);
             idList.Add(friends.SecondUserId);
             if (idList.Contains(currentUser.Id) && idList.Contains(user.Id))
             {
-                isFriend = true;
+                return RedirectToAction("Index", new { id = user.UserName });
             }
             idList.Clear();
-        }
-
-        if (isFriend)
-        {
-            return RedirectToAction("Index", new { id = user.UserName });
         }
 
         await _db.Friends.AddAsync(new Friend
