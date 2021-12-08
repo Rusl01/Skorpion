@@ -23,7 +23,7 @@ public class Game
     [Microsoft.Build.Framework.Required] public double Price { get; set; }
     
     [Microsoft.Build.Framework.Required] public User Developer { get; set; }
-
+    public string DeveloperSite { get; set; }
     public ICollection<GameGenre> Genres { get; set; }
     public ICollection<GamePlatform> Platforms { get; set; }
     public ICollection<GamePlayer> Players { get; set; }

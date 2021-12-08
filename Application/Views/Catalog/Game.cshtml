@@ -1,0 +1,46 @@
+﻿@model Game
+@{
+    ViewData["Title"] = "Страница игры";
+}
+<div class="container">
+    <div class="row block-color p-5 rounded-3">
+        <div class="col-4">
+            <img src="@Model?.Cover" class="img-fluid" alt="...">
+        </div>
+        <div class="col-8">
+            <div class="row">
+                <h2 class="card-title">@Model?.Title</h2>
+                <p class="card-title">
+                    <small class="text-muted me-3">Дата выхода</small>@Model?.ReleaseDate.ToShortDateString()
+                </p>
+                <p class="card-title">
+                    <small class="text-muted me-3">Разработчик</small>
+                    <a asp-controller="Account" asp-action="Index" asp-route-id="@Model?.Developer.UserName">@Model?.Developer.Nickname</a>
+                </p>
+                @if (Model?.Price > 4)
+                {
+                    <h2 class="card-title"><small class="text-muted me-3">Цена</small>@Model?.Price рублей</h2>
+                }
+                else if (Model?.Price > 1)
+                {
+                    <h2 class="card-title"><small class="text-muted me-3">Цена</small>@Model?.Price рубля</h2>
+                }
+                else
+                {
+                    <h2 class="card-title"><small class="text-muted me-3">Цена</small>@Model?.Price рубль</h2>
+                }
+            </div>
+            <div class="row">
+                <p>@Model?.Description</p>
+            </div>
+            <div class="row row-cols-auto">
+                <div class="col">
+                    <a class="btn btn-primary ml-auto" asp-controller="Cart" asp-action="Buy" asp-route-id="@Model?.Id">Купить</a>
+                </div>
+                <div class="col">
+                    <a class="btn btn-primary ml-auto" asp-controller="Catalog" asp-action="ToDeveloperSite" asp-route-url="@Model?.DeveloperSite">Перейти на сайт разработчика</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

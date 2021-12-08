@@ -21,4 +21,5 @@ public class GameViewModel
     [Required] public List<Genre> Genres { get; set; }
     [Required] public List<Platform> Platforms { get; set; }
     [Required] public List<Player> Players { get; set; }
+    [Required] public string DeveloperSite { get; set; }
 }

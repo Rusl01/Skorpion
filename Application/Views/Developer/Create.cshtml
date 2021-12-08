@@ -28,6 +28,11 @@
             <input asp-for="Price" type="number" class="form-control" id="floatingInput" placeholder="500">
             <label asp-for="Price" for="floatingInput">Цена</label>
         </div>
+        <div class="form-floating mb-3">
+            <input asp-for="DeveloperSite" type="url" class="form-control" id="floatingInput" placeholder="Url">
+            <label asp-for="DeveloperSite" for="floatingInput">Сайт разработчика</label>
+        </div>
+        <br>
         <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuGenre" data-bs-toggle="dropdown" aria-expanded="false">
                 Жанр
@@ -46,6 +51,7 @@
                 }
             </ul>
         </div>
+        <br>
         <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuPlatform" data-bs-toggle="dropdown" aria-expanded="false">
                 Платформа
@@ -64,6 +70,7 @@
                 }
             </ul>
         </div>
+        <br>
         <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuPlayers" data-bs-toggle="dropdown" aria-expanded="false">
                 Число игроков
@@ -82,6 +89,7 @@
                 }
             </ul>
         </div>
+        <br>
         <button class="w-100 btn btn-lg btn-primary" type="submit">Добавить</button>
     </form>
 </div>

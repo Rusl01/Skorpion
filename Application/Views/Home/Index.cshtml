@@ -32,7 +32,9 @@
                                         <div class="mb-3 w-100 block-color border-0">
                                             <div class="row">
                                                 <div class="col h-100">
-                                                    <img src="@item.Cover" class="img-fluid rounded-start rounded-3" alt="@item.Cover">
+                                                    <a class="link-no-style" asp-controller="Catalog" asp-action="Game" asp-route-id="@item.Id">
+                                                        <img src="@item.Cover" class="img-fluid rounded-start rounded-3" alt="@item.Cover">
+                                                    </a>
                                                 </div>
                                                 <div class="col">
                                                     <div class="card-body">
@@ -70,7 +72,9 @@
                                         <div class="mb-3 w-100 block-color border-0">
                                             <div class="row">
                                                 <div class="col h-100">
-                                                    <img src="@item.Cover" class="img-fluid rounded-start rounded-3" alt="@item.Cover">
+                                                    <a class="link-no-style" asp-controller="Catalog" asp-action="Game" asp-route-id="@item.Id">
+                                                        <img src="@item.Cover" class="img-fluid rounded-start rounded-3" alt="@item.Cover">
+                                                    </a>
                                                 </div>
                                                 <div class="col">
                                                     <div class="card-body">

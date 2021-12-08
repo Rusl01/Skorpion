@@ -1,4 +1,5 @@
-﻿using Application.Data;
+﻿using System.Threading.Tasks;
+using Application.Data;
 using Application.Models;
 using Application.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -121,6 +122,22 @@ public class CatalogController : Controller
 
         return View(model);
     }
+
+    [HttpGet]
+    [AllowAnonymous]
+    public async Task<IActionResult> Game(int id)
+    {
+        var game = await _db.Games.Include(g => g.Developer).FirstAsync(g => g.Id == id);
+        return View(game);
+    }
+    
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult ToDeveloperSite(string url)
+    {
+        return url[..8].Equals("https://") ? RedirectPermanent(url) : RedirectPermanent("https://" + url);
+    }
+
 
     /// <summary>
     /// Функция поиска игр
