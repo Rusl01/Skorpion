@@ -1,6 +1,8 @@
 ﻿@model Application.ViewModels.CatalogViewModel
 @{
     ViewData["Title"] = "Каталог";
+    string hasPreviousPage = Model.PageViewModel.HasPreviousPage ? "" : "disabled";
+    string hasNextPage = Model.PageViewModel.HasNextPage ? "" : "disabled";
 }
 
 <div class="mt-3">
@@ -116,5 +118,28 @@
                 </div>
             </div>
         }
+    </div>
+    <div class="text-center w-100">
+    @if (Model!.PageViewModel != null)
+    {
+        @if (Model!.PageViewModel.HasPreviousPage)
+        {
+            <a asp-action="Index"
+               asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+               class="btn btn-outline-dark @hasPreviousPage">
+                <i class="glyphicon glyphicon-chevron-left"></i>
+                Назад
+            </a>
+        }
+        @if (Model!.PageViewModel.HasNextPage)
+        {
+            <a asp-action="Index"
+               asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+               class="btn btn-outline-dark @hasNextPage">
+                Вперед
+                <i class="glyphicon glyphicon-chevron-right"></i>
+            </a>
+        }
+    }
     </div>
 </div>

@@ -17,6 +17,7 @@ public class DeveloperController : Controller
 {
     private readonly ApplicationContext _db;
     private readonly UserManager<User> _userManager;
+    private const int PageSize = 6;
 
     public DeveloperController(UserManager<User> userManager, ApplicationContext context)
     {
@@ -25,11 +26,21 @@ public class DeveloperController : Controller
     }
     
     [HttpGet]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int page=1)
     {
         var currentUser = await _userManager.GetUserAsync(HttpContext.User);
         var developerGames = _db.Games.Where(game => game.Developer == currentUser).ToList();
-        return View(developerGames);
+        
+        var count = developerGames.Count();
+        var items = developerGames.Skip((page - 1) * PageSize).Take(PageSize).ToList();
+        var pageViewModel = new PageViewModel(count, page, PageSize);
+        
+        var model = new DeveloperViewModel
+        {
+            Games = items,
+            PageViewModel = pageViewModel
+        };
+        return View(model);
     }
     
     [HttpGet]

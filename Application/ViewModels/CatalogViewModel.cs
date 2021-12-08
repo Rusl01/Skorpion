@@ -11,4 +11,5 @@ public class CatalogViewModel
     public List<Genre> Genres { get; set; }
     public List<Platform> Platforms { get; set; }
     public List<Player> Players { get; set; }
+    public PageViewModel PageViewModel { get; set; }
 }

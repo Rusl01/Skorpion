@@ -7,4 +7,5 @@ namespace Application.ViewModels;
 public class LibraryViewModel
 {
     [Required] public Dictionary<Guid, Game> KeyGames { get; set; }
+    public PageViewModel PageViewModel { get; set; }
 }

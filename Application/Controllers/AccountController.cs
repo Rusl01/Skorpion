@@ -17,6 +17,7 @@ public class AccountController : Controller
     private readonly ApplicationContext _db;
     private readonly SignInManager<User> _signInManager;
     private readonly UserManager<User> _userManager;
+    private const int PageSize = 10;
 
     public AccountController(UserManager<User> userManager, SignInManager<User> signInManager,
         ApplicationContext context)
@@ -81,7 +82,7 @@ public class AccountController : Controller
     /// Страница поиска пользователя
     /// </summary>
     [HttpGet]
-    public IActionResult FindUser(FindUserViewModel model)
+    public IActionResult FindUser(FindUserViewModel model, int page=1)
     {
         List<User> users;
         if (model.Nickname != null)
@@ -95,7 +96,17 @@ public class AccountController : Controller
         }
         users = !string.IsNullOrEmpty(model.Nickname) ? 
             _db.Users.Where(x => x.Nickname == model.Nickname).ToList() : _db.Users.ToList();
-        var newModel = new FindUserViewModel { Users = users, Nickname = model.Nickname };
+        
+        var count = users.Count();
+        var items = users.Skip((page - 1) * PageSize).Take(PageSize).ToList();
+        var pageViewModel = new PageViewModel(count, page, PageSize);
+        
+        var newModel = new FindUserViewModel
+        {
+            Users = items, 
+            Nickname = model.Nickname, 
+            PageViewModel = pageViewModel
+        };
         
         return View(newModel);
     }
@@ -140,7 +151,7 @@ public class AccountController : Controller
     /// Страница библиотеки игр пользователя
     /// </summary>
     [HttpGet]
-    public async Task<IActionResult> Library()
+    public async Task<IActionResult> Library(int page=1)
     {
         var currentUser = await _userManager.GetUserAsync(HttpContext.User);
         var keys = _db.Keys.Where(key => key.UserId == currentUser.Id).ToList();
@@ -149,7 +160,16 @@ public class AccountController : Controller
         {
             keyGames.Add(key.Id, _db.Games.First(g => g.Id == key.GameId));
         }
-        var model = new LibraryViewModel { KeyGames = keyGames };
+        
+        var count = keyGames.Count();
+        var items = keyGames.Skip((page - 1) * PageSize).Take(PageSize).ToList();
+        var pageViewModel = new PageViewModel(count, page, PageSize);
+        
+        var model = new LibraryViewModel
+        {
+            KeyGames = keyGames,
+            PageViewModel = pageViewModel
+        };
         return View(model);
     }
 

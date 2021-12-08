@@ -1,29 +1,61 @@
 ﻿@model Application.ViewModels.LibraryViewModel
 @{
     ViewData["Title"] = "Библиотека игр";
+    string hasPreviousPage = Model.PageViewModel.HasPreviousPage ? "" : "disabled";
+    string hasNextPage = Model.PageViewModel.HasNextPage ? "" : "disabled";
 }
 <div class="container">
-    <table class="table">
-        <tr>
-            <th>Ключ</th>
-            <th>Обложка</th>
-            <th>Название</th>
-            <th>Описание</th>
-            <th>Дата выхода</th>
-            <th>Цена</th>
-        </tr>
-        @foreach (var (key, value) in Model!.KeyGames)
-        {
+    @if (Model?.KeyGames != null && Model?.KeyGames.Count != 0)
+    {
+        <table class="table">
             <tr>
-                <td>@key</td>
-                <td>
-                    <img src="@value.Cover" alt="Avatar" width="64px">
-                </td>
-                <td>@value.Title</td>
-                <td>@value.Description</td>
-                <td>@value.ReleaseDate.ToShortDateString()</td>
-                <td>@value.Price</td>
+                <th>Ключ</th>
+                <th>Обложка</th>
+                <th>Название</th>
+                <th>Описание</th>
+                <th>Дата выхода</th>
+                <th>Цена</th>
             </tr>
-        }
-    </table>
+            @foreach (var (key, value) in Model!.KeyGames)
+            {
+                <tr>
+                    <td>@key</td>
+                    <td>
+                        <img src="@value.Cover" alt="Avatar" width="64px">
+                    </td>
+                    <td>@value.Title</td>
+                    <td>@value.Description</td>
+                    <td>@value.ReleaseDate.ToShortDateString()</td>
+                    <td>@value.Price</td>
+                </tr>
+            }
+        </table>
+        <div class="text-center w-100">
+            @if (Model!.PageViewModel != null)
+            {
+                @if (Model!.PageViewModel.HasPreviousPage)
+                {
+                    <a asp-action="Index"
+                       asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+                       class="btn btn-outline-dark @hasPreviousPage">
+                        <i class="glyphicon glyphicon-chevron-left"></i>
+                        Назад
+                    </a>
+                }
+                @if (Model!.PageViewModel.HasNextPage)
+                {
+                    <a asp-action="Index"
+                       asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+                       class="btn btn-outline-dark @hasNextPage">
+                        Вперед
+                        <i class="glyphicon glyphicon-chevron-right"></i>
+                    </a>
+                }
+            }
+        </div>
+    }
+    else
+    {
+        <p>У вас еще нет ключей от игр</p>
+    }
 </div>

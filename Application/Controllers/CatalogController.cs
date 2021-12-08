@@ -12,6 +12,7 @@ namespace Application.Controllers;
 public class CatalogController : Controller
 {
     private readonly ApplicationContext _db;
+    private const int PageSize = 6;
 
     public CatalogController(ApplicationContext context)
     {
@@ -23,20 +24,24 @@ public class CatalogController : Controller
     /// </summary>
     [HttpGet]
     [AllowAnonymous]
-    public IActionResult Index(string sortOrder, string searchString)
+    public IActionResult Index(string sortOrder, string searchString, int page=1)
     {
-        Console.WriteLine("GET Index");
         var games = SortSearchGames(sortOrder, searchString, _db.Games);
         var genres = _db.Genres.ToList();
         var platforms = _db.Platforms.ToList();
         var players = _db.Players.ToList();
         
+        var count = games.Count();
+        var items = games.Skip((page - 1) * PageSize).Take(PageSize).ToList();
+        var pageViewModel = new PageViewModel(count, page, PageSize);
+        
         var catalogViewModel = new CatalogViewModel
         {
-            Games = games.ToList(), 
+            Games = items, 
             Genres = genres,
             Platforms = platforms, 
-            Players = players
+            Players = players,
+            PageViewModel = pageViewModel
         };
         
         return View(catalogViewModel);
@@ -47,9 +52,8 @@ public class CatalogController : Controller
     /// </summary>
     [HttpPost]
     [AllowAnonymous]
-    public IActionResult Index(string sortOrder, string searchString, CatalogViewModel model)
+    public IActionResult Index(string sortOrder, string searchString, CatalogViewModel model, int page=1)
     {
-        Console.WriteLine("POST Index");
         var selectedGenres = model.Genres.Where(v => v.Selected).ToList();
         if (selectedGenres.Count == 0) selectedGenres = _db.Genres.ToList();
         var selectedPlatforms = model.Platforms.Where(v => v.Selected).ToList();
@@ -105,10 +109,15 @@ public class CatalogController : Controller
         // Сортировка и поиск игр
         var sortedSearchedGames = SortSearchGames(sortOrder, searchString, games.AsQueryable()).ToList();
         
-        model.Games = sortedSearchedGames;
+        var count = sortedSearchedGames.Count();
+        var items = sortedSearchedGames.Skip((page - 1) * PageSize).Take(PageSize).ToList();
+        var pageViewModel = new PageViewModel(count, page, PageSize);
+        
+        model.Games = items;
         model.Genres = model.Genres.ToList();
         model.Platforms = model.Platforms;
         model.Players = model.Players;
+        model.PageViewModel = pageViewModel;
 
         return View(model);
     }
