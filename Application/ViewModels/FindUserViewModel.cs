@@ -10,4 +10,5 @@ public class FindUserViewModel
 {
     [Required] public List<User> Users { get; set; }
     [Required] public string Nickname { get; set; }
+    public PageViewModel PageViewModel { get; set; }
 }

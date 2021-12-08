@@ -1,4 +1,5 @@
-﻿using Application.Data;
+﻿using System.Threading.Tasks;
+using Application.Data;
 using Application.Helpers;
 using Application.Models;
 using Application.ViewModels;
@@ -84,8 +85,9 @@ public class CartController : Controller
     /// <summary>
     /// Страница выдачи ключей от игр
     /// </summary>
-    public IActionResult Key()
+    public async Task<IActionResult> Key()
     {
+        var keys = new Dictionary<string, string>();
         if ((User.Identity != null && !User.Identity.IsAuthenticated) || User.Identity == null)
         {
             var cart = HttpContext.Session.GetObjectFromJson<List<Item>>("cart");
@@ -94,17 +96,23 @@ public class CartController : Controller
                 ViewBag.cart = cart;
                 ViewBag.total = cart.Aggregate(0.0, (current, item) => current + item.Game.Price);
                 ViewBag.cook = 0;
-                List<string> keys = new List<string>();
+                
                 foreach (var item in ViewBag.cart)
                 {
                     Guid token = Guid.NewGuid();
                     _db.Keys.Add(new Key {Id = token, GameId = item.Game.Id, UserId = null});
-                    keys.Add(token.ToString());
-                    Console.WriteLine(token.ToString());
+                    var id = item.Game.Id;
+                    var gamesAll = _db.Games;
+                    foreach (var game in gamesAll)
+                    {
+                        if (game.Id == id)
+                        {
+                            keys.Add(token.ToString(), game.DeveloperSite);
+                        }
+                    }
                 }
 
                 _db.SaveChanges();
-                ViewBag.keys = keys;
             }
             else
             {
@@ -129,17 +137,22 @@ public class CartController : Controller
                 ViewBag.cart = cartGames;
                 ViewBag.total = cartGames.Aggregate(0.0, (current, item) => current + item.Price);
                 ViewBag.cook = 1;
-                List<string> keys = new List<string>();
                 foreach (var item in ViewBag.cart)
                 {
                     Guid token = Guid.NewGuid();
                     _db.Keys.Add(new Key {Id = token, GameId = item.Id, UserId = currentUser.Id});
-                    keys.Add(token.ToString());
-                    Console.WriteLine(token.ToString());
+                    var id = item.Id;
+                    var gamesAll = _db.Games;
+                    foreach (var game in gamesAll)
+                    {
+                        if (game.Id == id)
+                        {
+                            keys.Add(token.ToString(), game.DeveloperSite);
+                        }
+                    }
                 }
 
                 _db.SaveChanges();
-                ViewBag.keys = keys;
             }
             else
             {
@@ -149,8 +162,27 @@ public class CartController : Controller
                 ViewBag.cook = 1;
             }
         }
+        
+        // Очищаем корзину
+        if ((User.Identity != null && !User.Identity.IsAuthenticated) || User.Identity == null)
+        {
+            var cart = new List<Item>();
+            HttpContext.Session.SetObjectAsJson("cart", cart);
+        }
+        else
+        {
+            var currentUser = _userManager.GetUserAsync(HttpContext.User).Result;
+            var cartItems = _db.CartItems.Where(u => u.UserId == currentUser.Id);
+            _db.CartItems.RemoveRange(cartItems);
+            await _db.SaveChangesAsync();
+        }
 
-        return View();
+        var model = new KeyViewModel
+        {
+            KeySite = keys
+        };
+        
+        return View(model);
     }
 
     /// <summary>

@@ -17,6 +17,7 @@ public class DeveloperController : Controller
 {
     private readonly ApplicationContext _db;
     private readonly UserManager<User> _userManager;
+    private const int PageSize = 6;
 
     public DeveloperController(UserManager<User> userManager, ApplicationContext context)
     {
@@ -25,11 +26,21 @@ public class DeveloperController : Controller
     }
     
     [HttpGet]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int page=1)
     {
         var currentUser = await _userManager.GetUserAsync(HttpContext.User);
         var developerGames = _db.Games.Where(game => game.Developer == currentUser).ToList();
-        return View(developerGames);
+        
+        var count = developerGames.Count();
+        var items = developerGames.Skip((page - 1) * PageSize).Take(PageSize).ToList();
+        var pageViewModel = new PageViewModel(count, page, PageSize);
+        
+        var model = new DeveloperViewModel
+        {
+            Games = items,
+            PageViewModel = pageViewModel
+        };
+        return View(model);
     }
     
     [HttpGet]
@@ -84,7 +95,8 @@ public class DeveloperController : Controller
             Price = game.Price,
             Genres = genres,
             Platforms = platforms,
-            Players = players
+            Players = players,
+            DeveloperSite = game.DeveloperSite[..8].Equals("https://") ? game.DeveloperSite : "https://" + game.DeveloperSite
         };
         return View(model);
     }
@@ -107,7 +119,8 @@ public class DeveloperController : Controller
             Developer = currentUser,
             Genres = selectedGenres.Select(genre => new GameGenre {GenreId = genre.Id}).ToList(),
             Platforms = selectedPlatforms.Select(platform => new GamePlatform {PlatformId = platform.Id}).ToList(),
-            Players = selectedPlayers.Select(player => new GamePlayer {PlayerId = player.Id}).ToList()
+            Players = selectedPlayers.Select(player => new GamePlayer {PlayerId = player.Id}).ToList(),
+            DeveloperSite = model.DeveloperSite[..8].Equals("https://") ? model.DeveloperSite : "https://" + model.DeveloperSite
         };
 
         await _db.Games.AddAsync(game);
@@ -140,6 +153,7 @@ public class DeveloperController : Controller
         game.Genres = selectedGenres.Select(genre => new GameGenre {GenreId = genre.Id}).ToList();
         game.Platforms = selectedPlatforms.Select(platform => new GamePlatform {PlatformId = platform.Id}).ToList();
         game.Players = selectedPlayers.Select(player => new GamePlayer {PlayerId = player.Id}).ToList();
+        game.DeveloperSite = model.DeveloperSite[..8].Equals("https://") ? model.DeveloperSite : "https://" + model.DeveloperSite;
         
         _db.Games.Update(game);
         await _db.SaveChangesAsync();

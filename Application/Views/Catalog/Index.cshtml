@@ -1,26 +1,30 @@
 ﻿@model Application.ViewModels.CatalogViewModel
 @{
     ViewData["Title"] = "Каталог";
+    string hasPreviousPage = Model.PageViewModel.HasPreviousPage ? "" : "disabled";
+    string hasNextPage = Model.PageViewModel.HasNextPage ? "" : "disabled";
 }
 
 <div class="mt-3">
     <div class="row border-top border-bottom">
         <div class="col">
             <nav class="navbar navbar-expand-lg hstack gap-3">
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuSort" data-bs-toggle="dropdown" aria-expanded="false">
-                        Сортировать
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuSort">
-                        <li>
-                            <a class="dropdown-item" asp-controller="Catalog" asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]">по дате</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" a sp-controller="Catalog" asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">по наименованию</a>
-                        </li>
-                    </ul>
-                </div>
                 <form class="hstack gap-3" asp-controller="Catalog" asp-action="Index" method="post" role="form">
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuSort" data-bs-toggle="dropdown" aria-expanded="false">
+                            Сортировать
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuSort">
+                            <li>
+                                <input class="dropdown-item" type="submit" asp-controller="Catalog" asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]" value="по дате">
+                                <!--<a class="dropdown-item" asp-controller="Catalog" asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]">по дате</a>-->
+                            </li>
+                            <li>
+                                <input class="dropdown-item" type="submit" asp-controller="Catalog" asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" value="по наименованию">
+                                <!--<a class="dropdown-item" asp-controller="Catalog" asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">по наименованию</a>-->
+                            </li>
+                        </ul>
+                    </div>
                     <div class="dropdown">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuGenre" data-bs-toggle="dropdown" aria-expanded="false">
                             Жанр
@@ -94,25 +98,58 @@
         @foreach (var game in Model?.Games)
         {
             <div class="card block-color mb-3 item">
-                <img src="@game.Cover" width="300" height="400" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h2 class="card-title">@game.Title</h2>
-                    <h3 class="card-title">@game.ReleaseDate.ToShortDateString()</h3>
-                    @if (game.Price > 4)
-                    {
-                        <h2 class="card-title">@game.Price рублей</h2>
-                    }
-                    else if (game.Price > 1)
-                    {
-                        <h2 class="card-title">@game.Price рубля</h2>
-                    }
-                    else
-                    {
-                        <h2 class="card-title">@game.Price рубль</h2>
-                    }
-                    <a class="btn btn-primary ml-auto" asp-controller="Cart" asp-action="Buy" asp-route-id="@game.Id">Купить</a>
+                <a class="link-no-style" asp-controller="Catalog" asp-action="Game" asp-route-id="@game.Id">
+                    <img src="@game.Cover" width="300" height="400" class="card-img-top" alt="...">
+                </a>
+                <a class="link-no-style" asp-controller="Catalog" asp-action="Game" asp-route-id="@game.Id">
+                    <div class="card-body">
+                        <h2 class="card-title">@game.Title</h2>
+                        <h4 class="text-muted" class="card-title">@game.ReleaseDate.ToShortDateString()</h4>
+                    </div>
+                </a>
+                <div class="card-footer d-flex justify-content-between">
+                    <div>
+                        @if (game.Price > 4)
+                        {
+                            <h2>@game.Price рублей</h2>
+                        }
+                        else if (game.Price > 1)
+                        {
+                            <h2>@game.Price рубля</h2>
+                        }
+                        else
+                        {
+                            <h2>@game.Price рубль</h2>
+                        }
+                    </div>
+                    <div>
+                        <a class="btn btn-primary" asp-controller="Cart" asp-action="Buy" asp-route-id="@game.Id">Купить</a>
+                    </div>
                 </div>
             </div>
+        }
+    </div>
+    <div class="text-center w-100">
+        @if (Model!.PageViewModel != null)
+        {
+            @if (Model!.PageViewModel.HasPreviousPage)
+            {
+                <a asp-action="Index"
+                   asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+                   class="btn btn-outline-dark @hasPreviousPage">
+                    <i class="glyphicon glyphicon-chevron-left"></i>
+                    Назад
+                </a>
+            }
+            @if (Model!.PageViewModel.HasNextPage)
+            {
+                <a asp-action="Index"
+                   asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+                   class="btn btn-outline-dark @hasNextPage">
+                    Вперед
+                    <i class="glyphicon glyphicon-chevron-right"></i>
+                </a>
+            }
         }
     </div>
 </div>

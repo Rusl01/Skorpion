@@ -1,4 +1,5 @@
-﻿using Application.Data;
+﻿using System.Threading.Tasks;
+using Application.Data;
 using Application.Models;
 using Application.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -12,6 +13,7 @@ namespace Application.Controllers;
 public class CatalogController : Controller
 {
     private readonly ApplicationContext _db;
+    private const int PageSize = 6;
 
     public CatalogController(ApplicationContext context)
     {
@@ -23,19 +25,24 @@ public class CatalogController : Controller
     /// </summary>
     [HttpGet]
     [AllowAnonymous]
-    public IActionResult Index(string sortOrder, string searchString)
+    public IActionResult Index(string sortOrder, string searchString, int page=1)
     {
-        var games = SortSearchGames(sortOrder, searchString);
+        var games = SortSearchGames(sortOrder, searchString, _db.Games);
         var genres = _db.Genres.ToList();
         var platforms = _db.Platforms.ToList();
         var players = _db.Players.ToList();
         
+        var count = games.Count();
+        var items = games.Skip((page - 1) * PageSize).Take(PageSize).ToList();
+        var pageViewModel = new PageViewModel(count, page, PageSize);
+        
         var catalogViewModel = new CatalogViewModel
         {
-            Games = games.ToList(), 
+            Games = items, 
             Genres = genres,
             Platforms = platforms, 
-            Players = players
+            Players = players,
+            PageViewModel = pageViewModel
         };
         
         return View(catalogViewModel);
@@ -45,50 +52,101 @@ public class CatalogController : Controller
     /// Фильтрация и поиск игр в каталоге
     /// </summary>
     [HttpPost]
-    public IActionResult Index(string sortOrder, string searchString, CatalogViewModel model)
+    [AllowAnonymous]
+    public IActionResult Index(string sortOrder, string searchString, CatalogViewModel model, int page=1)
     {
-        var selectedGenres = model.Genres.Where(v => v.Selected).Select(v => v.Name).ToList();
-        if (selectedGenres.Count == 0) selectedGenres = _db.Genres.Select(v => v.Name).ToList();
-        var selectedPlatforms = model.Platforms.Where(v => v.Selected).Select(v => v.Name).ToList();
-        if (selectedPlatforms.Count == 0) selectedPlatforms = _db.Platforms.Select(v => v.Name).ToList();
-        var selectedPlayers = model.Players.Where(v => v.Selected).Select(v => v.Name).ToList();
-        if (selectedPlayers.Count == 0) selectedPlayers = _db.Players.Select(v => v.Name).ToList();
+        var selectedGenres = model.Genres.Where(v => v.Selected).ToList();
+        if (selectedGenres.Count == 0) selectedGenres = _db.Genres.ToList();
+        var selectedPlatforms = model.Platforms.Where(v => v.Selected).ToList();
+        if (selectedPlatforms.Count == 0) selectedPlatforms = _db.Platforms.ToList();
+        var selectedPlayers = model.Players.Where(v => v.Selected).ToList();
+        if (selectedPlayers.Count == 0) selectedPlayers = _db.Players.ToList();
 
-        // Сортировка и поиск игр
-        var sortedSearchedGames = SortSearchGames(sortOrder, searchString).ToList();
-
-        var games = new List<Game>();
-        for (var i = 0; i < sortedSearchedGames.Count; i++)
+        // Отфильтровать по жанрам
+        var games = _db.Games
+            .Include(g => g.Genres)
+            .Include(g => g.Platforms)
+            .Include(g => g.Players).ToList();
+        var gamesToDelete = new List<int>();
+        foreach (var game in games)
         {
-            var gameGenres = _db.Genres
-                .Where(genre => genre.Games.Any(j => j.GameId == sortedSearchedGames[i].Id)).ToList();
-            var gamePlatforms = _db.Platforms
-                .Where(platform => platform.Games.Any(j => j.GameId == sortedSearchedGames[i].Id)).ToList();
-            var gamePlayers = _db.Players
-                .Where(player => player.Games.Any(j => j.GameId == sortedSearchedGames[i].Id)).ToList();
-            
-            games.AddRange(from t in gameGenres where selectedGenres.Contains(t.Name) select sortedSearchedGames[i]);
-            foreach (var t in gamePlatforms.Where(t => !selectedPlatforms.Contains(t.Name))) games.Remove(sortedSearchedGames[i]);
-            foreach (var t in gamePlayers.Where(t => !selectedPlayers.Contains(t.Name))) games.Remove(sortedSearchedGames[i]);
+            var genresId = game.Genres.Select(x => x.GenreId).ToList();
+            var selectedGenresId = selectedGenres.Select(x => x.Id);
+            if (!genresId.Intersect(selectedGenresId).Any())
+            {
+                gamesToDelete.Add(game.Id);
+            }
+        }
+        // Отфильтровать по платформам
+        foreach (var game in games)
+        {
+            var platformsId = game.Platforms.Select(x => x.PlatformId).ToList();
+            var selectedPlatformsId = selectedPlatforms.Select(x => x.Id);
+            if (!platformsId.Intersect(selectedPlatformsId).Any())
+            {
+                gamesToDelete.Add(game.Id);
+            }
+        }
+        
+        // Отфильтровать по количеству игроков
+        foreach (var game in games)
+        {
+            var playersId = game.Players.Select(x => x.PlayerId).ToList();
+            var selectedPlayersId = selectedPlayers.Select(x => x.Id);
+            if (!playersId.Intersect(selectedPlayersId).Any())
+            {
+                gamesToDelete.Add(game.Id);
+            }
         }
 
-        model.Games = games;
+        foreach (var id in gamesToDelete)
+        {
+            if (games.Select(x => x.Id).Contains(id))
+            {
+                games.Remove(_db.Games.First(g => g.Id == id));
+            }
+        }
+        
+        // Сортировка и поиск игр
+        var sortedSearchedGames = SortSearchGames(sortOrder, searchString, games.AsQueryable()).ToList();
+        
+        var count = sortedSearchedGames.Count();
+        var items = sortedSearchedGames.Skip((page - 1) * PageSize).Take(PageSize).ToList();
+        var pageViewModel = new PageViewModel(count, page, PageSize);
+        
+        model.Games = items;
         model.Genres = model.Genres.ToList();
         model.Platforms = model.Platforms;
         model.Players = model.Players;
+        model.PageViewModel = pageViewModel;
 
         return View(model);
     }
 
+    [HttpGet]
+    [AllowAnonymous]
+    public async Task<IActionResult> Game(int id)
+    {
+        var game = await _db.Games.Include(g => g.Developer).FirstAsync(g => g.Id == id);
+        return View(game);
+    }
+    
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult ToDeveloperSite(string url)
+    {
+        return url[..8].Equals("https://") ? RedirectPermanent(url) : RedirectPermanent("https://" + url);
+    }
+
+
     /// <summary>
     /// Функция поиска игр
     /// </summary>
-    private IEnumerable<Game> SortSearchGames(string sortOrder, string searchString)
+    private IEnumerable<Game> SortSearchGames(string sortOrder, string searchString , IQueryable<Game> games)
     {
         ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : ""; // По названию
         ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date"; // По дате выхода
         ViewData["CurrentFilter"] = searchString;
-        IQueryable<Game> games = _db.Games;
 
         // Поиск по названию игры
         if (!string.IsNullOrEmpty(searchString)) games = games.Where(s => s.Title.Contains(searchString));

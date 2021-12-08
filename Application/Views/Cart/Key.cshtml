@@ -1,12 +1,18 @@
-﻿@{
+﻿@model Application.ViewModels.KeyViewModel
+@{
     ViewData["Title"] = "Ключ от игры";
 }
 <div class="mt-3 h-100 row align-items-center text-center">
     <h1>Спасибо за покупку</h1>
     <h2>Ваш код от игры</h2>
-    @foreach (var item in ViewBag.keys)
+    @foreach (var (key, value) in @Model.KeySite)
     {
-        <h3>@item</h3>
+        <h3>@key</h3>
+        <h2>
+            Вы можете активировать этот ключ на 
+            <a asp-controller="Catalog" asp-action="ToDeveloperSite" asp-route-url="@value">
+                сайте разработчика
+            </a> игры.
+        </h2>
     }
-    <h2>Вы можете активировать этот ключ на сайте разработчика игры</h2>
 </div>

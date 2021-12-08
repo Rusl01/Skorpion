@@ -1,36 +1,68 @@
-﻿@model List<Game>
+﻿@model Application.ViewModels.DeveloperViewModel
 @{
     ViewData["Title"] = "Студия разработчика";
+    string hasPreviousPage = Model.PageViewModel.HasPreviousPage ? "" : "disabled";
+    string hasNextPage = Model.PageViewModel.HasNextPage ? "" : "disabled";
 }
 
 <div class="container">
     <a asp-controller="Developer" asp-action="Create" class="w-25 btn btn-lg btn-primary">Добавить игру</a>
-    <table class="table">
-        <tr>
-            <th>Id</th>
-            <th>Название</th>
-            <th>Дата выхода</th>
-            <th>Описание</th>
-            <th>Обложка</th>
-            <th>Цена</th>
-            <th>Действие</th>
-        </tr>
-        @foreach (var game in Model!)
-        {
+    @if (Model?.Games != null && Model?.Games.Count != 0)
+    {
+        <table class="table">
             <tr>
-                <td>@game.Id</td>
-                <td>@game.Title</td>
-                <td>@game.ReleaseDate.ToShortDateString()</td>
-                <td>@game.Description</td>
-                <td>
-                    <img src="@game.Cover" alt="Avatar" width="64px">
-                </td>
-                <td>@game.Price</td>
-                <td>
-                    <a asp-controller="Developer" asp-action="Update" asp-route-id="@game.Id">Редактировать</a>
-                    <a asp-controller="Developer" asp-action="Delete" asp-route-id="@game.Id">Удалить</a>
-                </td>
+                <th>Id</th>
+                <th>Название</th>
+                <th>Дата выхода</th>
+                <th>Описание</th>
+                <th>Обложка</th>
+                <th>Цена</th>
+                <th>Действие</th>
             </tr>
-        }
-    </table>
+            @foreach (var game in Model!.Games)
+            {
+                <tr>
+                    <td>@game.Id</td>
+                    <td>@game.Title</td>
+                    <td>@game.ReleaseDate.ToShortDateString()</td>
+                    <td>@game.Description</td>
+                    <td>
+                        <img src="@game.Cover" alt="Avatar" width="64px">
+                    </td>
+                    <td>@game.Price</td>
+                    <td>
+                        <a asp-controller="Developer" asp-action="Update" asp-route-id="@game.Id">Редактировать</a>
+                        <a asp-controller="Developer" asp-action="Delete" asp-route-id="@game.Id">Удалить</a>
+                    </td>
+                </tr>
+            }
+        </table>
+        <div class="text-center w-100">
+            @if (Model!.PageViewModel != null)
+            {
+                @if (Model!.PageViewModel.HasPreviousPage)
+                {
+                    <a asp-action="Index"
+                       asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+                       class="btn btn-outline-dark @hasPreviousPage">
+                        <i class="glyphicon glyphicon-chevron-left"></i>
+                        Назад
+                    </a>
+                }
+                @if (Model!.PageViewModel.HasNextPage)
+                {
+                    <a asp-action="Index"
+                       asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+                       class="btn btn-outline-dark @hasNextPage">
+                        Вперед
+                        <i class="glyphicon glyphicon-chevron-right"></i>
+                    </a>
+                }
+            }
+        </div>
+    }
+    else
+    {
+        <p>У вас нет игр!</p>
+    }
 </div>
