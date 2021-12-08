@@ -9,8 +9,9 @@
             <div class="d-flex w-100 justify-content-center align-items-center">
                 <div class="p-5 flex justify-content-center align-items-center">
                     <h1>
-                        <b>SKORPION</b> - это простой способ находить, скачивать и распространять инди-игры онлайн.
-                        Являетесь ли вы разработчиком, который хочет загрузить свою игру, или просто кем-то, кто ищет что-то новое, чтобы поиграть.
+                        <b class="text-primary">SKORPION</b> - это простой способ 
+                        <span class="text-warning">находить</span> и <span class="text-danger">распространять</span> 
+                        <span class="text-info">инди-игры</span> онлайн
                     </h1>
                 </div>
             </div>
@@ -35,13 +36,13 @@
                                                 </div>
                                                 <div class="col">
                                                     <div class="card-body">
-                                                        <h5 class="card-title">@item.Title</h5>
+                                                        <h5 class="card-title"><b>@item.Title</b></h5>
                                                         <p class="card-text">@item.Description</p>
                                                         <p class="card-text">
                                                             <small class="text-muted">Релиз @item.ReleaseDate.ToShortDateString()</small>
                                                         </p>
                                                         <p class="card-text">
-                                                            <button class="btn btn-primary ml-auto" type="submit">Купить</button>
+                                                            <a class="btn btn-primary ml-auto" asp-controller="Cart" asp-action="Buy" asp-route-id="@item.Id">Купить</a>
                                                         </p>
                                                     </div>
                                                 </div>
@@ -62,7 +63,7 @@
                     <div class="p-5 flex">
                         <div id="carouselExampleInterval" class="carousel slide carousel-fade" data-bs-ride="carousel">
                             <div class="carousel-inner">
-                                @{ index = 0; }
+                                @{ index = Model.Count - 1; }
                                 @foreach (var item in Model)
                                 {
                                     <div class="carousel-item @(index == 0 ? "active" : "")" data-bs-interval="3000">
@@ -73,20 +74,20 @@
                                                 </div>
                                                 <div class="col">
                                                     <div class="card-body">
-                                                        <h5 class="card-title">@item.Title</h5>
+                                                        <h5 class="card-title"><b>@item.Title</b></h5>
                                                         <p class="card-text">@item.Description</p>
                                                         <p class="card-text">
                                                             <small class="text-muted">Релиз @item.ReleaseDate.ToShortDateString()</small>
                                                         </p>
                                                         <p class="card-text">
-                                                            <button class="btn btn-primary ml-auto" type="submit">Купить</button>
+                                                            <a class="btn btn-primary ml-auto" asp-controller="Cart" asp-action="Buy" asp-route-id="@item.Id">Купить</a>
                                                         </p>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    @(index++)
+                                    @(index--)
                                 }
                             </div>
                         </div>

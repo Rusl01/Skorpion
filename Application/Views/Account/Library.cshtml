@@ -1,0 +1,29 @@
+﻿@model Application.ViewModels.LibraryViewModel
+@{
+    ViewData["Title"] = "Библиотека игр";
+}
+<div class="container">
+    <table class="table">
+        <tr>
+            <th>Ключ</th>
+            <th>Обложка</th>
+            <th>Название</th>
+            <th>Описание</th>
+            <th>Дата выхода</th>
+            <th>Цена</th>
+        </tr>
+        @foreach (var (key, value) in Model!.KeyGames)
+        {
+            <tr>
+                <td>@key</td>
+                <td>
+                    <img src="@value.Cover" alt="Avatar" width="64px">
+                </td>
+                <td>@value.Title</td>
+                <td>@value.Description</td>
+                <td>@value.ReleaseDate.ToShortDateString()</td>
+                <td>@value.Price</td>
+            </tr>
+        }
+    </table>
+</div>

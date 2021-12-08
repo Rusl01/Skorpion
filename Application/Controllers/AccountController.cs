@@ -31,31 +31,39 @@ public class AccountController : Controller
     /// </summary>
     public async Task<IActionResult> Index(string id)
     {
-        var user = await _db.Users.FirstOrDefaultAsync(x => x.UserName == id);
-
-        var keyGames = new Dictionary<Guid, Game>();
+        var userName = id;
+        Console.WriteLine("userName: " + userName);
+        var user = await _db.Users.FirstAsync(x => x.UserName == userName);
         var keys = _db.Keys.Where(x => x.UserId == user.Id).ToList();
-        foreach (var key in keys)
-        {
-            var game = _db.Games.First(x => x.Id == key.GameId);
-            keyGames.Add(key.Id, game);
-        }
+        var games = keys.Select(key => _db.Games.First(x => x.Id == key.GameId)).ToList();
 
         var friendIds = _db.Friends
             .Where(x => x.FirstUserId == user.Id || x.SecondUserId == user.Id).ToList()
             .Select(friend => friend.FirstUserId == user.Id ? friend.SecondUserId : friend.FirstUserId).ToList();
         var friends = friendIds.Select(friendId => _db.Users.First(x => x.Id == friendId)).ToList();
 
-        var currentUser = _userManager.GetUserAsync(HttpContext.User).Result;
-        var currentUserFriendIds = _db.Friends
-            .Where(x => x.FirstUserId == currentUser.Id || x.SecondUserId == currentUser.Id).ToList()
-            .Select(friend => friend.FirstUserId == currentUser.Id ? friend.SecondUserId : friend.FirstUserId).ToList();
-        var currentUserFriends = friendIds.Select(friendId => _db.Users.First(x => x.Id == friendId)).ToList();
-        var addFriend = false;
-        if (user != null) addFriend = !currentUserFriends.Contains(_db.Users.First(x => x.UserName == id));
+        var currentUser = await _userManager.GetUserAsync(HttpContext.User);
+        var addFriend = !isFriend(currentUser.Id, user.Id);
+        Console.WriteLine("addFriend: " + addFriend);
+        
+        return View(new ProfileViewModel {User = user, Games = games, AddFriend = addFriend, Friends = friends});
+    }
 
-
-        return View(new ProfileViewModel {User = user, KeyGames = keyGames, AddFriend = addFriend, Friends = friends});
+    public bool isFriend(string currentUserId, string userId)
+    {
+        var friendsList = _db.Friends.ToList();
+        var idList = new List<string>();
+        foreach (var friends in friendsList)
+        {
+            idList.Add(friends.FirstUserId);
+            idList.Add(friends.SecondUserId);
+            if (idList.Contains(currentUserId) && idList.Contains(userId))
+            {
+                return true;
+            }
+            idList.Clear();
+        }
+        return false;
     }
 
     /// <summary>
@@ -75,8 +83,21 @@ public class AccountController : Controller
     [HttpGet]
     public IActionResult FindUser(FindUserViewModel model)
     {
-        var users = _db.Users.Where(x => x.Nickname == model.Nickname).ToList();
-        return View(new FindUserViewModel {Users = users, Nickname = model.Nickname});
+        List<User> users;
+        if (model.Nickname != null)
+        {
+            Console.WriteLine("model:" + model.Nickname.Length + "!");
+        }
+        else
+        {
+            Console.WriteLine("Fail null object");
+            model.Nickname = new string("");
+        }
+        users = !string.IsNullOrEmpty(model.Nickname) ? 
+            _db.Users.Where(x => x.Nickname == model.Nickname).ToList() : _db.Users.ToList();
+        var newModel = new FindUserViewModel { Users = users, Nickname = model.Nickname };
+        
+        return View(newModel);
     }
 
     /// <summary>
@@ -98,7 +119,9 @@ public class AccountController : Controller
         var currentUser = _userManager.GetUserAsync(HttpContext.User).Result;
         var model = new UpdateViewModel
         {
-            UserPhotoUrl = currentUser.UserPhotoUrl
+            UserPhotoUrl = currentUser.UserPhotoUrl,
+            Nickname = currentUser.Nickname,
+            Email = currentUser.Email
         };
         return View(model);
     }
@@ -112,6 +135,23 @@ public class AccountController : Controller
     {
         return View();
     }
+    
+    /// <summary>
+    /// Страница библиотеки игр пользователя
+    /// </summary>
+    [HttpGet]
+    public async Task<IActionResult> Library()
+    {
+        var currentUser = await _userManager.GetUserAsync(HttpContext.User);
+        var keys = _db.Keys.Where(key => key.UserId == currentUser.Id).ToList();
+        Dictionary<Guid, Game> keyGames = new Dictionary<Guid, Game>();
+        foreach (var key in keys)
+        {
+            keyGames.Add(key.Id, _db.Games.First(g => g.Id == key.GameId));
+        }
+        var model = new LibraryViewModel { KeyGames = keyGames };
+        return View(model);
+    }
 
     /// <summary>
     /// Авторизация пользователя в системе
@@ -124,7 +164,6 @@ public class AccountController : Controller
         var result = await _signInManager.PasswordSignInAsync(user.Email, user.Password, user.RememberMe, false);
         if (result.Succeeded) return RedirectToAction("Index", "Home");
         ModelState.AddModelError(string.Empty, "Неправильный логин или пароль");
-        
         return View(user);
     }
 
@@ -202,16 +241,37 @@ public class AccountController : Controller
     /// </summary>
     public async Task<IActionResult> AddFriend(string id)
     {
+        var friendsList = _db.Friends.ToList();
+        var idList = new List<string>();
+        var currentUser = await _userManager.GetUserAsync(HttpContext.User);
+        var user = _db.Users.First(x => x.Id == id);
+        var isFriend = false;
+        foreach (var friends in friendsList)
+        {
+            idList.Add(friends.FirstUserId);
+            idList.Add(friends.SecondUserId);
+            if (idList.Contains(currentUser.Id) && idList.Contains(user.Id))
+            {
+                isFriend = true;
+            }
+            idList.Clear();
+        }
+
+        if (isFriend)
+        {
+            return RedirectToAction("Index", new { id = user.UserName });
+        }
+
         await _db.Friends.AddAsync(new Friend
         {
-            FirstUserId = _userManager.GetUserAsync(HttpContext.User).Result.Id,
-            SecondUserId = _db.Users.First(x => x.UserName == id).Id,
-            FirstUser = _userManager.GetUserAsync(HttpContext.User).Result,
-            SecondUser = _db.Users.First(x => x.UserName == id)
+            FirstUserId = currentUser.Id,
+            SecondUserId = user.Id,
+            FirstUser = currentUser,
+            SecondUser = user
         });
         await _db.SaveChangesAsync();
-        
-        return RedirectToAction("Index", new {id});
+
+        return RedirectToAction("Index", new { id = user.UserName });
     }
 
     /// <summary>
@@ -219,14 +279,14 @@ public class AccountController : Controller
     /// </summary>
     public async Task<IActionResult> RemoveFriend(string id)
     {
-        var userId = _userManager.GetUserAsync(HttpContext.User).Result.Id;
-        var friend = _db.Users.First(x => x.UserName == id);
+        var currentUserId = _userManager.GetUserAsync(HttpContext.User).Result.Id;
+        var friend = _db.Users.First(x => x.Id == id);
         _db.Friends.Remove(_db.Friends.First(x =>
-            x.FirstUserId == friend.Id && x.SecondUserId == userId ||
-            x.SecondUserId == friend.Id && x.FirstUserId == userId));
+            x.FirstUserId == friend.Id && x.SecondUserId == currentUserId ||
+            x.SecondUserId == friend.Id && x.FirstUserId == currentUserId));
         await _db.SaveChangesAsync();
         
-        return RedirectToAction("Index", new {id});
+        return RedirectToAction("Index", new { id = friend.UserName });
     }
 
     /// <summary>

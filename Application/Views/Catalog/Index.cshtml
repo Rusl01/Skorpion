@@ -91,12 +91,25 @@
         </div>
     </div>
     <div class="d-flex flex-wrap mt-3">
-        @foreach (var game in Model.Games)
+        @foreach (var game in Model?.Games)
         {
             <div class="card block-color mb-3 item">
                 <img src="@game.Cover" width="300" height="400" class="card-img-top" alt="...">
-                <div class="card-body d-flex justify-content-between">
-                    <h2 class="card-title">@game.Price</h2>
+                <div class="card-body">
+                    <h2 class="card-title">@game.Title</h2>
+                    <h3 class="card-title">@game.ReleaseDate.ToShortDateString()</h3>
+                    @if (game.Price > 4)
+                    {
+                        <h2 class="card-title">@game.Price рублей</h2>
+                    }
+                    else if (game.Price > 1)
+                    {
+                        <h2 class="card-title">@game.Price рубля</h2>
+                    }
+                    else
+                    {
+                        <h2 class="card-title">@game.Price рубль</h2>
+                    }
                     <a class="btn btn-primary ml-auto" asp-controller="Cart" asp-action="Buy" asp-route-id="@game.Id">Купить</a>
                 </div>
             </div>
