@@ -7,20 +7,22 @@
     <div class="row border-top border-bottom">
         <div class="col">
             <nav class="navbar navbar-expand-lg hstack gap-3">
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuSort" data-bs-toggle="dropdown" aria-expanded="false">
-                        Сортировать
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuSort">
-                        <li>
-                            <a class="dropdown-item" asp-controller="Catalog" asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]">по дате</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" a sp-controller="Catalog" asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">по наименованию</a>
-                        </li>
-                    </ul>
-                </div>
                 <form class="hstack gap-3" asp-controller="Catalog" asp-action="Index" method="post" role="form">
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuSort" data-bs-toggle="dropdown" aria-expanded="false">
+                            Сортировать
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuSort">
+                            <li>
+                                <input class="dropdown-item" type="submit" asp-controller="Catalog" asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]" value="по дате">
+                                <!--<a class="dropdown-item" asp-controller="Catalog" asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]">по дате</a>-->
+                            </li>
+                            <li>
+                                <input class="dropdown-item" type="submit" asp-controller="Catalog" asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" value="по наименованию">
+                                <!--<a class="dropdown-item" asp-controller="Catalog" asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">по наименованию</a>-->
+                            </li>
+                        </ul>
+                    </div>
                     <div class="dropdown">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuGenre" data-bs-toggle="dropdown" aria-expanded="false">
                             Жанр

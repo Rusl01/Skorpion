@@ -25,6 +25,7 @@ public class CatalogController : Controller
     [AllowAnonymous]
     public IActionResult Index(string sortOrder, string searchString)
     {
+        Console.WriteLine("GET Index");
         var games = SortSearchGames(sortOrder, searchString, _db.Games);
         var genres = _db.Genres.ToList();
         var platforms = _db.Platforms.ToList();
@@ -45,8 +46,10 @@ public class CatalogController : Controller
     /// Фильтрация и поиск игр в каталоге
     /// </summary>
     [HttpPost]
+    [AllowAnonymous]
     public IActionResult Index(string sortOrder, string searchString, CatalogViewModel model)
     {
+        Console.WriteLine("POST Index");
         var selectedGenres = model.Genres.Where(v => v.Selected).ToList();
         if (selectedGenres.Count == 0) selectedGenres = _db.Genres.ToList();
         var selectedPlatforms = model.Platforms.Where(v => v.Selected).ToList();
