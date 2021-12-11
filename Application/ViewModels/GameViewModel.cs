@@ -5,6 +5,9 @@ using Application.Models;
 
 namespace Application.ViewModels;
 
+/// <summary>
+/// Модель для страниц создания и обновления игры
+/// </summary>
 public class GameViewModel
 {
     [Required] public int Id { get; set; }

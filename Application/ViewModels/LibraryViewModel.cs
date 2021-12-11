@@ -4,6 +4,9 @@ using Application.Models;
 
 namespace Application.ViewModels;
 
+/// <summary>
+/// Модель для страницы "Библиотека игр" пользователя
+/// </summary>
 public class LibraryViewModel
 {
     [Required] public Dictionary<Guid, Game> KeyGames { get; set; }

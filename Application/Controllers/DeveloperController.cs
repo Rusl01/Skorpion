@@ -25,6 +25,9 @@ public class DeveloperController : Controller
         _db = context;
     }
     
+    /// <summary>
+    /// Страница с таблицей игр разработчика
+    /// </summary>
     [HttpGet]
     public async Task<IActionResult> Index(int page=1)
     {
@@ -43,6 +46,9 @@ public class DeveloperController : Controller
         return View(model);
     }
     
+    /// <summary>
+    /// Страница добавления игры в базу данных
+    /// </summary>
     [HttpGet]
     public IActionResult Create()
     {
@@ -58,6 +64,9 @@ public class DeveloperController : Controller
         return View(model);
     }
     
+    /// <summary>
+    /// Страница обновления информации об игре в базе данных
+    /// </summary>
     [HttpGet]
     public async Task<IActionResult> Update(int id)
     {
@@ -101,6 +110,9 @@ public class DeveloperController : Controller
         return View(model);
     }
 
+    /// <summary>
+    /// Добавление игры в базу данных
+    /// </summary>
     [HttpPost]
     public async Task<IActionResult> Create(GameViewModel model)
     {
@@ -128,6 +140,9 @@ public class DeveloperController : Controller
         return RedirectToAction("Index");
     }
     
+    /// <summary>
+    /// Обновление информации об игре в базе данных
+    /// </summary>
     [HttpPost]
     public async Task<IActionResult> Update(GameViewModel model)
     {
@@ -161,6 +176,9 @@ public class DeveloperController : Controller
         return RedirectToAction("Index");
     }
     
+    /// <summary>
+    /// Удаление игры из базы данных
+    /// </summary>
     public async Task<IActionResult> Delete(int id)
     {
         var game = await _db.Games.FirstAsync(game => game.Id == id);

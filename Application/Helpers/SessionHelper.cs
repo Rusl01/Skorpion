@@ -3,6 +3,9 @@ using Newtonsoft.Json;
 
 namespace Application.Helpers;
 
+/// <summary>
+/// Класс для сохранения и взятия объекта из сессии
+/// </summary>
 public static class SessionHelper
 {
     /// <summary>
@@ -14,7 +17,7 @@ public static class SessionHelper
     }
 
     /// <summary>
-    /// Взятие JSON объекта в сессии
+    /// Взятие JSON объекта из сессии
     /// </summary>
     public static T GetObjectFromJson<T>(this ISession session, string key)
     {

@@ -59,12 +59,14 @@
                 {
                     @foreach (var game in Model.Games)
                     {
-                        <div class="card block-color mb-3 item bg-opacity-10 border-white">
-                            <img src="@game.Cover" width="100" height="200" class="card-img-top mt-3" alt="...">
-                            <div class="card-body text-center">
-                                <h2 class="card-title">@game.Title</h2>
+                        <a class="card item block-color bg-opacity-10 link-no-style  border-white" asp-controller="Catalog" asp-action="Game" asp-route-id="@game.Id">
+                            <div class="card block-color mb-3 border-0">
+                                <img src="@game.Cover" width="100" height="200" class="card-img-top mt-3" alt="...">
+                                <div class="card-body text-center">
+                                    <h2 class="card-title">@game.Title</h2>
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     }
                 }
             </div>

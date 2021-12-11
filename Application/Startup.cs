@@ -1,5 +1,6 @@
 using Application.Data;
 using Application.Models;
+using Application.Services;
 using Microsoft.AspNetCore.Identity;
 
 namespace Application;
@@ -28,6 +29,8 @@ public class Startup
         services.AddRazorPages().AddRazorRuntimeCompilation();
         services.AddDbContext<ApplicationContext>();
         services.AddSession();
+        services.AddHttpContextAccessor();
+        services.AddScoped<IUserService, UserService>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
