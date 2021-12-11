@@ -28,6 +28,7 @@ public class CartController : Controller
     /// </summary>
     public IActionResult Checkout()
     {
+        //Можно убрать лишние ветвления
         if ((User.Identity != null && !User.Identity.IsAuthenticated) || User.Identity == null)
         {
             var cart = HttpContext.Session.GetObjectFromJson<List<Item>>("cart");
@@ -88,6 +89,7 @@ public class CartController : Controller
     public async Task<IActionResult> Key()
     {
         var keys = new Dictionary<string, string>();
+        //Можно убрать лишние ветвления
         if ((User.Identity != null && !User.Identity.IsAuthenticated) || User.Identity == null)
         {
             var cart = HttpContext.Session.GetObjectFromJson<List<Item>>("cart");
@@ -111,7 +113,6 @@ public class CartController : Controller
                         }
                     }
                 }
-
                 _db.SaveChanges();
             }
             else
@@ -151,7 +152,6 @@ public class CartController : Controller
                         }
                     }
                 }
-
                 _db.SaveChanges();
             }
             else
@@ -216,7 +216,6 @@ public class CartController : Controller
             {
                 cartGames.Add(_db.Games.First(x => x.Id.ToString() == cart[i].GameId));
             }
-
             if (cartGames.Any())
             {
                 Console.WriteLine("Корзина не пуста");
@@ -232,7 +231,6 @@ public class CartController : Controller
                 ViewBag.cook = 1;
             }
         }
-
         Console.WriteLine("Cart Index");
         return View();
     }
@@ -279,7 +277,6 @@ public class CartController : Controller
                 if (index == -1)
                     _db.CartItems.Add(new CartItem {UserId = currentUser.Id, GameId = product.Id.ToString()});
             }
-
             _db.SaveChanges();
         }
 

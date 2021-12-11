@@ -123,6 +123,9 @@ public class CatalogController : Controller
         return View(model);
     }
 
+    /// <summary>
+    /// Ссылка на разработчика
+    /// </summary>
     [HttpGet]
     [AllowAnonymous]
     public async Task<IActionResult> Game(int id)
@@ -130,7 +133,10 @@ public class CatalogController : Controller
         var game = await _db.Games.Include(g => g.Developer).FirstAsync(g => g.Id == id);
         return View(game);
     }
-    
+
+    /// <summary>
+    /// Обработчик кнопки "На сайт разработчика"
+    /// </summary>
     [HttpGet]
     [AllowAnonymous]
     public IActionResult ToDeveloperSite(string url)

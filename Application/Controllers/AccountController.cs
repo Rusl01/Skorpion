@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Application.Data;
 using Application.Models;
+using Application.Services;
 using Application.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -17,14 +18,16 @@ public class AccountController : Controller
     private readonly ApplicationContext _db;
     private readonly SignInManager<User> _signInManager;
     private readonly UserManager<User> _userManager;
+    private readonly IUserService _userService;
     private const int PageSize = 10;
 
     public AccountController(UserManager<User> userManager, SignInManager<User> signInManager,
-        ApplicationContext context)
+        ApplicationContext context, IUserService userService)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _db = context;
+        _userService = userService;
     }
 
     /// <summary>
@@ -33,38 +36,22 @@ public class AccountController : Controller
     public async Task<IActionResult> Index(string id)
     {
         var userName = id;
-        Console.WriteLine("userName: " + userName);
-        var user = await _db.Users.FirstAsync(x => x.UserName == userName);
-        var keys = _db.Keys.Where(x => x.UserId == user.Id).ToList();
-        var games = keys.Select(key => _db.Games.First(x => x.Id == key.GameId)).ToList();
+        var currentUser = await _userService.getCurrentUserAsync();
 
-        var friendIds = _db.Friends
-            .Where(x => x.FirstUserId == user.Id || x.SecondUserId == user.Id).ToList()
-            .Select(friend => friend.FirstUserId == user.Id ? friend.SecondUserId : friend.FirstUserId).ToList();
-        var friends = friendIds.Select(friendId => _db.Users.First(x => x.Id == friendId)).ToList();
+        var user = await _userService.getUserByUserNameAsync(userName);
+        var games = _userService.getUserGames(user);
+        var friends = _userService.getUserFriends(user);
+        var addFriend = !_userService.IsFriend(currentUser, user);
 
-        var currentUser = await _userManager.GetUserAsync(HttpContext.User);
-        var addFriend = !isFriend(currentUser.Id, user.Id);
-        Console.WriteLine("addFriend: " + addFriend);
-        
-        return View(new ProfileViewModel {User = user, Games = games, AddFriend = addFriend, Friends = friends});
-    }
-
-    public bool isFriend(string currentUserId, string userId)
-    {
-        var friendsList = _db.Friends.ToList();
-        var idList = new List<string>();
-        foreach (var friends in friendsList)
+        var model = new ProfileViewModel
         {
-            idList.Add(friends.FirstUserId);
-            idList.Add(friends.SecondUserId);
-            if (idList.Contains(currentUserId) && idList.Contains(userId))
-            {
-                return true;
-            }
-            idList.Clear();
-        }
-        return false;
+            User = user,
+            Games = games,
+            AddFriend = addFriend,
+            Friends = friends
+        };
+
+        return View(model);
     }
 
     /// <summary>
@@ -82,32 +69,24 @@ public class AccountController : Controller
     /// Страница поиска пользователя
     /// </summary>
     [HttpGet]
-    public IActionResult FindUser(FindUserViewModel model, int page=1)
+    public IActionResult FindUser(FindUserViewModel model, int page = 1)
     {
         List<User> users;
-        if (model.Nickname != null)
-        {
-            Console.WriteLine("model:" + model.Nickname.Length + "!");
-        }
-        else
-        {
-            Console.WriteLine("Fail null object");
-            model.Nickname = new string("");
-        }
-        users = !string.IsNullOrEmpty(model.Nickname) ? 
-            _db.Users.Where(x => x.Nickname == model.Nickname).ToList() : _db.Users.ToList();
-        
-        var count = users.Count();
-        var items = users.Skip((page - 1) * PageSize).Take(PageSize).ToList();
-        var pageViewModel = new PageViewModel(count, page, PageSize);
-        
+        model.Nickname ??= new string("");
+        users = !string.IsNullOrEmpty(model.Nickname)
+            ? _db.Users.Where(x => x.Nickname == model.Nickname).ToList()
+            : _db.Users.ToList();
+
+        var partUsers = users.Skip((page - 1) * PageSize).Take(PageSize).ToList();
+        var pageViewModel = new PageViewModel(users.Count(), page, PageSize);
+
         var newModel = new FindUserViewModel
         {
-            Users = items, 
-            Nickname = model.Nickname, 
+            Users = partUsers,
+            Nickname = model.Nickname,
             PageViewModel = pageViewModel
         };
-        
+
         return View(newModel);
     }
 
@@ -119,72 +98,6 @@ public class AccountController : Controller
     public IActionResult Register()
     {
         return View();
-    }
-    
-    /// <summary>
-    /// Страница редактирования пользователя
-    /// </summary>
-    [HttpGet]
-    public IActionResult Update()
-    {
-        var currentUser = _userManager.GetUserAsync(HttpContext.User).Result;
-        var model = new UpdateViewModel
-        {
-            UserPhotoUrl = currentUser.UserPhotoUrl,
-            Nickname = currentUser.Nickname,
-            Email = currentUser.Email
-        };
-        return View(model);
-    }
-
-    /// <summary>
-    /// Страница авторизации
-    /// </summary>
-    [HttpGet]
-    [AllowAnonymous]
-    public IActionResult Login()
-    {
-        return View();
-    }
-    
-    /// <summary>
-    /// Страница библиотеки игр пользователя
-    /// </summary>
-    [HttpGet]
-    public async Task<IActionResult> Library(int page=1)
-    {
-        var currentUser = await _userManager.GetUserAsync(HttpContext.User);
-        var keys = _db.Keys.Where(key => key.UserId == currentUser.Id).ToList();
-        Dictionary<Guid, Game> keyGames = new Dictionary<Guid, Game>();
-        foreach (var key in keys)
-        {
-            keyGames.Add(key.Id, _db.Games.First(g => g.Id == key.GameId));
-        }
-        
-        var count = keyGames.Count();
-        var items = keyGames.Skip((page - 1) * PageSize).Take(PageSize).ToList();
-        var pageViewModel = new PageViewModel(count, page, PageSize);
-        
-        var model = new LibraryViewModel
-        {
-            KeyGames = keyGames,
-            PageViewModel = pageViewModel
-        };
-        return View(model);
-    }
-
-    /// <summary>
-    /// Авторизация пользователя в системе
-    /// </summary>
-    [HttpPost]
-    [AllowAnonymous]
-    public async Task<IActionResult> Login(LoginViewModel user)
-    {
-        if (!ModelState.IsValid) return View(user);
-        var result = await _signInManager.PasswordSignInAsync(user.Email, user.Password, user.RememberMe, false);
-        if (result.Succeeded) return RedirectToAction("Index", "Home");
-        ModelState.AddModelError(string.Empty, "Неправильный логин или пароль");
-        return View(user);
     }
 
     /// <summary>
@@ -214,11 +127,70 @@ public class AccountController : Controller
 
         foreach (var error in result.Errors) ModelState.AddModelError("", error.Description);
 
-        ModelState.AddModelError(string.Empty, "Неправильный логин или пароль");
+        ModelState.AddModelError(string.Empty, "Недостаточно надежный логин или пароль");
 
         return View(model);
     }
-    
+
+    /// <summary>
+    /// Страница редактирования пользователя
+    /// </summary>
+    [HttpGet]
+    public IActionResult Update()
+    {
+        var currentUser = _userManager.GetUserAsync(HttpContext.User).Result;
+        var model = new UpdateViewModel
+        {
+            UserPhotoUrl = currentUser.UserPhotoUrl,
+            Nickname = currentUser.Nickname,
+            Email = currentUser.Email
+        };
+        return View(model);
+    }
+
+    /// <summary>
+    /// Страница авторизации
+    /// </summary>
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult Login()
+    {
+        return View();
+    }
+
+    /// <summary>
+    /// Авторизация пользователя в системе
+    /// </summary>
+    [HttpPost]
+    [AllowAnonymous]
+    public async Task<IActionResult> Login(LoginViewModel user)
+    {
+        if (!ModelState.IsValid) return View(user);
+        var result = await _signInManager.PasswordSignInAsync(user.Email, user.Password, user.RememberMe, false);
+        if (result.Succeeded) return RedirectToAction("Index", "Home");
+        ModelState.AddModelError(string.Empty, "Неправильный логин или пароль");
+        return View(user);
+    }
+
+    /// <summary>
+    /// Страница библиотеки игр пользователя
+    /// </summary>
+    [HttpGet]
+    public async Task<IActionResult> Library(int page = 1)
+    {
+        var keyGames = await _userService.getCurrentUserKeysAsync();
+        var partKeyGames = keyGames.Skip((page - 1) * PageSize).Take(PageSize).ToDictionary(x => x.Key, x => x.Value);
+        var pageViewModel = new PageViewModel(keyGames.Count, page, PageSize);
+
+        var model = new LibraryViewModel
+        {
+            KeyGames = partKeyGames,
+            PageViewModel = pageViewModel
+        };
+
+        return View(model);
+    }
+
     /// <summary>
     /// Редактирование пользователя
     /// </summary>
@@ -231,7 +203,7 @@ public class AccountController : Controller
         user.Nickname = model.Nickname;
         user.UserName = model.Email;
         user.Email = model.Email;
-            
+
         var result = await _userManager.UpdateAsync(user);
 
         if (result.Succeeded)
@@ -252,56 +224,27 @@ public class AccountController : Controller
     public async Task<IActionResult> Logout()
     {
         await _signInManager.SignOutAsync();
-
         return RedirectToAction("Login");
     }
 
     /// <summary>
     /// Добавить пользователя с id к текущему пользователю в друзья
     /// </summary>
-    public async Task<IActionResult> AddFriend(string id)
+    public IActionResult AddFriend(string id)
     {
-        var friendsList = _db.Friends.ToList();
-        var currentUser = await _userManager.GetUserAsync(HttpContext.User);
         var user = _db.Users.First(x => x.Id == id);
-
-        var idList = new List<string>();
-        foreach (var friends in friendsList)
-        {
-            idList.Add(friends.FirstUserId);
-            idList.Add(friends.SecondUserId);
-            if (idList.Contains(currentUser.Id) && idList.Contains(user.Id))
-            {
-                return RedirectToAction("Index", new { id = user.UserName });
-            }
-            idList.Clear();
-        }
-
-        await _db.Friends.AddAsync(new Friend
-        {
-            FirstUserId = currentUser.Id,
-            SecondUserId = user.Id,
-            FirstUser = currentUser,
-            SecondUser = user
-        });
-        await _db.SaveChangesAsync();
-
-        return RedirectToAction("Index", new { id = user.UserName });
+        _userService.AddUserToFriendList(user);
+        return RedirectToAction("Index", new {id = user.UserName});
     }
 
     /// <summary>
     /// Удаление пользователя с id из списка друзей текущего пользователя
     /// </summary>
-    public async Task<IActionResult> RemoveFriend(string id)
+    public IActionResult RemoveFriend(string id)
     {
-        var currentUserId = _userManager.GetUserAsync(HttpContext.User).Result.Id;
-        var friend = _db.Users.First(x => x.Id == id);
-        _db.Friends.Remove(_db.Friends.First(x =>
-            x.FirstUserId == friend.Id && x.SecondUserId == currentUserId ||
-            x.SecondUserId == friend.Id && x.FirstUserId == currentUserId));
-        await _db.SaveChangesAsync();
-        
-        return RedirectToAction("Index", new { id = friend.UserName });
+        var user = _db.Users.First(x => x.Id == id);
+        _userService.RemoveUserFromFriendList(user);
+        return RedirectToAction("Index", new {id = user.UserName});
     }
 
     /// <summary>
@@ -310,9 +253,7 @@ public class AccountController : Controller
     public async Task<IActionResult> Remove(string id)
     {
         var user = await _userManager.FindByIdAsync(id);
-        _db.Users.Remove(user);
-        await _db.SaveChangesAsync();
-        
+        _userService.DeleteUser(user);
         return RedirectToAction("Admin");
     }
 }

@@ -5,6 +5,9 @@ using Microsoft.Build.Tasks;
 
 namespace Application.Controllers;
 
+/// <summary>
+/// Контроллер для управления API для разработчиков
+/// </summary>
 [Route("api/[controller]")]
 public class KeyController : Controller
 {
@@ -15,6 +18,9 @@ public class KeyController : Controller
         _db = context;
     }
     
+    /// <summary>
+    /// Возвращает id игры по ключу активации, если ключ валидный
+    /// </summary>
     [HttpGet("{key:guid}")] // api/key/{key}
     public async Task<IActionResult> Get(Guid key)
     {
